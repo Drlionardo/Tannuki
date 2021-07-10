@@ -5,8 +5,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class MainController {
+
     @GetMapping
     public String greet() {
+        return "about";
+    }
+    @GetMapping("/main")
+    public String allEvents() {
         return "main";
     }
 }

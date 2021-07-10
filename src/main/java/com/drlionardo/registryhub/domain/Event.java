@@ -17,7 +17,4 @@ public class Event {
     private List<User> admins;
     @OneToMany
     private List<RegistrationRequest> registrationRequestList;
-
-
-
 }
