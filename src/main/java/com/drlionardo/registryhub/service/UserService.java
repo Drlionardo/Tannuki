@@ -1,5 +1,6 @@
 package com.drlionardo.registryhub.service;
 
+import com.drlionardo.registryhub.domain.User;
 import com.drlionardo.registryhub.repo.UserRepo;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +17,10 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepo.findByEmail(email).get();
+        User userFromDb = userRepo.findByEmail(email);
+        if(userFromDb == null) {
+            throw new UsernameNotFoundException(email);
+        }
+        else return userFromDb;
     }
 }

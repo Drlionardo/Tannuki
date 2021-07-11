@@ -4,7 +4,7 @@
     <div>
         <form method="post" action="/login">
             <div>
-                <label>Email:</label> <input type="text" name="email">
+                <label>Email:</label> <input type="text" name="username">
             </div>
             <div>
                 <label>Password:</label> <input type="password" name="password">
@@ -12,7 +12,6 @@
             <input type="hidden" name="_csrf" value=${_csrf.token}>
             <div>
                 <button type="submit">Login</button>
-                ${responseMessage!}
             </div>
         </form>
     </div>

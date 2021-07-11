@@ -28,7 +28,7 @@ public class RegistrationController {
     }
     @PostMapping("/registration")
     public String registerUser(User user, Model model) {
-        Optional<User> userFromDb  = userRepo.findByEmail(user.getEmail());
+        Optional<User> userFromDb  = userRepo.findUserByEmail(user.getEmail());
         if(userFromDb.isPresent()) {
             model.addAttribute("responseMessage","User with this email already exists!");
             return "registration";
