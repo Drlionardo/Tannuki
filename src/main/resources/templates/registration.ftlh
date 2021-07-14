@@ -1,6 +1,8 @@
 <#import "macro/template.ftlh" as tmpl>
 <@tmpl.page>
     <h2>Registration page:</h2>
+    <a href="/login">Login page</a>
+
     <div>
         <form method="post" action="/registration">
             <div>

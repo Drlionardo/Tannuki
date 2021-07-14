@@ -7,6 +7,7 @@ import com.drlionardo.registryhub.repo.EventRepo;
 import com.drlionardo.registryhub.repo.RegistrationRequestRepo;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
@@ -77,5 +78,26 @@ public class EventService {
         return user.getRequestList().stream()
                 .filter((registrationRequest -> registrationRequest.getEvent().equals(event)))
                 .findFirst().orElse(null);
+    }
+
+    public void deleteAdminFromEvent(Long eventId, Long adminId) {
+        Event eventFromDb = eventRepo.getById(eventId);
+        User removedAdmin = userService.findUserById(adminId);
+        eventFromDb.getAdmins().remove(removedAdmin);
+        eventRepo.save(eventFromDb);
+    }
+    public void addAdminToEvent(Long eventId, String adminEmail) {
+        Event eventFromDb = eventRepo.getById(eventId);
+        User addedAdmin = userService.findUserByEmail(adminEmail);
+        eventFromDb.getAdmins().add(addedAdmin);
+        eventRepo.save(eventFromDb);
+
+    }
+
+    public void updateEvent(Long eventId, String eventName, String eventDescription) {
+        Event eventFromDb = eventRepo.getById(eventId);
+        eventFromDb.setName(eventName);
+        eventFromDb.setDescription(eventDescription);
+        eventRepo.save(eventFromDb);
     }
 }

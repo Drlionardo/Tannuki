@@ -26,6 +26,7 @@ public class RegistrationController {
     public String getRegisterPage() {
         return "registration";
     }
+
     @PostMapping("/registration")
     public String registerUser(User user, Model model) {
         Optional<User> userFromDb  = userRepo.findUserByEmail(user.getEmail());

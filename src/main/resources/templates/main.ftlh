@@ -15,7 +15,7 @@
 
 
     <#list events as event>
-        <div>Id:${event.id}</div>
+        <div>Id:${event.id} <a href="event/${event.id}">Link</a> </div>
         <div>Name:${event.name}</div>
         <div>
             Admins:

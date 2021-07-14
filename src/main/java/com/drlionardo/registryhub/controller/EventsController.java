@@ -35,6 +35,20 @@ public class EventsController {
         eventService.addEvent(admin, name, description);
         return "redirect:/main";
     }
+
+    @PostMapping("event/{id}/register")
+    public String registerForEvent(@PathVariable Long id, @AuthenticationPrincipal User user,
+                                   Model model) {
+        eventService.registerUserForEvent(user, eventService.findById(id));
+        return "redirect:/event/{id}";
+    }
+
+    @PostMapping("event/{id}/cancel")
+    public String cancelRegistration(@PathVariable Long id, @AuthenticationPrincipal User user) {
+        eventService.cancelRegistration(user, eventService.findById(id));
+        return "redirect:/event/{id}";
+    }
+
     @GetMapping("event/{id}")
     public String eventPage(@PathVariable Long id, @AuthenticationPrincipal User user,
                             Model model) {
@@ -51,25 +65,23 @@ public class EventsController {
                             Model model) {
         model.addAttribute("event", eventService.findById(id));
         model.addAttribute("user", user);
-        return "eventPageEditor";
+        return "eventEditor";
     }
 
     @PostMapping("event/{id}/edit")
-    public String editEvent(@PathVariable Long id, @AuthenticationPrincipal User user,
-                            Model model) {
-
-        return "eventPage";
-    }
-
-    @PostMapping("event/{id}/register")
-    public String registerForEvent(@PathVariable Long id, @AuthenticationPrincipal User user,
-                                   Model model) {
-        eventService.registerUserForEvent(user, eventService.findById(id));
+    public String editEvent(@PathVariable Long id, String eventName, String eventDescription) {
+        eventService.updateEvent(id, eventName, eventDescription);
         return "redirect:/event/{id}";
     }
-    @PostMapping("event/{id}/cancel")
-    public String cancelRegistration(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        eventService.cancelRegistration(user, eventService.findById(id));
+
+    @PostMapping("/event/{id}/deleteAdmin")
+    public String deleteAdminFromEvent(@PathVariable Long id, Long adminId) {
+        eventService.deleteAdminFromEvent(id, adminId);
+        return "redirect:/event/{id}";
+    }
+    @PostMapping("/event/{id}/addAdmin")
+    public String addAdminToEvent(@PathVariable Long id, String adminEmail) {
+        eventService.addAdminToEvent(id, adminEmail);
         return "redirect:/event/{id}";
     }
 

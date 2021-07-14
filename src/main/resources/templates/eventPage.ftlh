@@ -3,7 +3,7 @@
     <h2>Event page</h2>
     <a href="/main">Main page</a>
 
-    <div>Id:${event.id} </div>
+    <div>Id:${event.id}  <a href="/event/${event.id}/edit">Edit event</a> </div>
     <div>Name:${event.name}</div>
     <div>
         Admins:
