@@ -3,11 +3,13 @@ package com.drlionardo.registryhub.domain;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "event_id")
     private Long id;
     private LocalDate registrationStartDate;
     private LocalDate registrationEndDate;
@@ -15,7 +17,7 @@ public class Event {
     private String description;
     @ManyToMany
     private List<User> admins;
-    @OneToMany
+    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
     private List<RegistrationRequest> registrationRequestList;
 
     public Event() {
@@ -75,5 +77,18 @@ public class Event {
 
     public void setRegistrationRequestList(List<RegistrationRequest> registrationRequestList) {
         this.registrationRequestList = registrationRequestList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+        return id.equals(event.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
