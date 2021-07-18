@@ -38,7 +38,7 @@ public class EventService {
         Event event = new Event();
         event.setName(name);
         event.setDescription(description);
-        event.setCreationDate(LocalDate.now());
+        event.setCreationDate(LocalDateTime.now());
         var adminList = new ArrayList<User>();
         adminList.add(admin);
         event.setAdmins(adminList);

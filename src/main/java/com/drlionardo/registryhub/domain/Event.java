@@ -2,6 +2,7 @@ package com.drlionardo.registryhub.domain;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,21 +14,14 @@ public class Event {
     private Long id;
     private String name;
     private String description;
-    private LocalDate creationDate;
-    private LocalDate registrationStartDate;
-    private LocalDate registrationEndDate;
+    private LocalDateTime creationDate;
+    private LocalDateTime registrationStartDate;
+    private LocalDateTime registrationEndDate;
     @ManyToMany
     private List<User> admins;
     @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
     private List<RegistrationRequest> registrationRequestList;
 
-    public LocalDate getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(LocalDate creationDate) {
-        this.creationDate = creationDate;
-    }
 
     public Event() {
     }
@@ -40,19 +34,27 @@ public class Event {
         this.id = id;
     }
 
-    public LocalDate getRegistrationStartDate() {
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getRegistrationStartDate() {
         return registrationStartDate;
     }
 
-    public void setRegistrationStartDate(LocalDate registrationStartDate) {
+    public void setRegistrationStartDate(LocalDateTime registrationStartDate) {
         this.registrationStartDate = registrationStartDate;
     }
 
-    public LocalDate getRegistrationEndDate() {
+    public LocalDateTime getRegistrationEndDate() {
         return registrationEndDate;
     }
 
-    public void setRegistrationEndDate(LocalDate registrationEndDate) {
+    public void setRegistrationEndDate(LocalDateTime registrationEndDate) {
         this.registrationEndDate = registrationEndDate;
     }
 
