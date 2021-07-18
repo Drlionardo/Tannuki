@@ -1,5 +1,4 @@
 <#import "macro/template.ftlh" as tmpl>
-<#import "macro/template.ftlh" as tmpl>
 <@tmpl.page>
     <a href="/main">Main page</a>
     <div>Id:${event.id} </div>

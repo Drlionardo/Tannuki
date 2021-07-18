@@ -4,6 +4,7 @@ import com.drlionardo.registryhub.domain.Role;
 import com.drlionardo.registryhub.domain.User;
 import com.drlionardo.registryhub.exceptions.EmailAlreadyExistsException;
 import com.drlionardo.registryhub.exceptions.UsernameAlreadyExistsException;
+import com.drlionardo.registryhub.exceptions.WrongPasswordException;
 import com.drlionardo.registryhub.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -14,8 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -88,5 +89,40 @@ public class UserService implements UserDetailsService {
     }
     public User findUserByEmail(String email) {
         return userRepo.findUserByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    public void repeatActivationEmailMessage(Long id) {
+        User user = findUserById(id);
+        sendActivationCodeToEmail(user);
+    }
+
+    public void changeEmailWithValidation(Long userId, String newEmail) {
+        User user = findUserById(userId);
+        user.setEmail(newEmail);
+        user.setEmailValidated(false);
+        user.setActivationCode(UUID.randomUUID().toString());
+        userRepo.save(user);
+        sendActivationCodeToEmail(user);
+    }
+    public void changePassword(Long userId, String oldPassword, String newPassword) {
+        User user = findUserById(userId);
+        if(passwordEncoder.matches(oldPassword,user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepo.save(user);
+        }
+        else throw new WrongPasswordException();
+    }
+
+    public void updateRoles(Long id, Map<String, String> form) {
+        User user = findUserById(id);
+        Set<String> allRoles = Arrays.stream(Role.values()).map(Role::name).collect(Collectors.toSet());
+        user.getRoles().clear();
+        //Add all roles from form map
+        for (String key : form.keySet()) {
+            if(allRoles.contains(key)) {
+                user.getRoles().add(Role.valueOf(key));
+            }
+        }
+        userRepo.save(user);
     }
 }
