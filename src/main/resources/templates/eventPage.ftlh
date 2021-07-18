@@ -8,7 +8,7 @@
     <div>
         Admins:
         <#list event.admins as admin>
-            ${admin.email}
+            ${admin.username}
         </#list>
     </div>
     <div>Description:${event.description}</div>

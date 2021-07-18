@@ -1,6 +1,8 @@
 package com.drlionardo.registryhub.controller;
 
 import com.drlionardo.registryhub.domain.User;
+import com.drlionardo.registryhub.exceptions.EmailAlreadyExistsException;
+import com.drlionardo.registryhub.exceptions.UsernameAlreadyExistsException;
 import com.drlionardo.registryhub.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,16 +26,16 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public String registerUser(User user, Model model) {
-        boolean status = userService.registerUser(user);
-        if(status) {
+        try {
+            userService.registerUser(user);
+        } catch (EmailAlreadyExistsException e) {
             model.addAttribute("responseMessage","User with this email already exists!");
             return "registration";
-        } else {
-            model.addAttribute("userId", user.getId());
-            model.addAttribute("responseMessage",
-                    "To activate check your email and locate the confirmation email");
-            return "emailValidation";
+        } catch (UsernameAlreadyExistsException e) {
+            model.addAttribute("responseMessage","User with this username already exists!");
+            return "registration";
         }
+        return "redirect:/login";
     }
     
     @GetMapping("/activate/{code}")
@@ -43,9 +45,7 @@ public class RegistrationController {
         }
         else {
             model.addAttribute("responseMessage", "Error! Unable to activate account!");
-
         }
         return "login";
-
     }
 }

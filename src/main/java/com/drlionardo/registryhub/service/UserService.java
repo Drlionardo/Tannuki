@@ -2,6 +2,8 @@ package com.drlionardo.registryhub.service;
 
 import com.drlionardo.registryhub.domain.Role;
 import com.drlionardo.registryhub.domain.User;
+import com.drlionardo.registryhub.exceptions.EmailAlreadyExistsException;
+import com.drlionardo.registryhub.exceptions.UsernameAlreadyExistsException;
 import com.drlionardo.registryhub.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -10,11 +12,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,40 +31,29 @@ public class UserService implements UserDetailsService {
         this.mailSender = mailSender;
     }
 
-    public boolean registerUser(User user) {
-        User userFromDb = userRepo.findByEmail(user.getEmail());
-        if(userFromDb != null) {
-            return false;
-        }
+    public void registerUser(User user) {
+        checkIfUserAlreadyExists(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Collections.singleton(Role.USER));
         user.setActivationCode(UUID.randomUUID().toString());
         userRepo.save(user);
         sendActivationCodeToEmail(user);
-        return true;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User userFromDb = userRepo.findByEmail(email);
-        if(userFromDb == null) {
-            throw new UsernameNotFoundException(email);
+    private void checkIfUserAlreadyExists(User user) {
+        if(userRepo.findByEmail(user.getEmail()) != null) {
+            throw new EmailAlreadyExistsException();
         }
-        else return userFromDb;
-    }
-
-    public User findUserById(Long id) {
-        return userRepo.findUserById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
-    public User findUserByEmail(String email) {
-        return userRepo.findUserByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if(userRepo.findByUsername(user.getUsername()) != null) {
+            throw new UsernameAlreadyExistsException();
+        }
     }
 
     public boolean activateUser(String code) {
         User user = userRepo.findUserByActivationCode(code)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         if(user.getActivationCode().equals(code)) {
-            user.setActive(true);
+            user.setEmailValidated(true);
             user.setActivationCode(null);
             userRepo.save(user);
             return true;
@@ -83,5 +72,21 @@ public class UserService implements UserDetailsService {
                 user.getActivationCode()
         );
         mailSender.sendMessage(user.getEmail(), "Activation code", message);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User userFromDb = userRepo.findByEmail(email);
+        if(userFromDb == null) {
+            throw new UsernameNotFoundException(email);
+        }
+        else return userFromDb;
+    }
+
+    public User findUserById(Long id) {
+        return userRepo.findUserById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+    public User findUserByEmail(String email) {
+        return userRepo.findUserByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 }

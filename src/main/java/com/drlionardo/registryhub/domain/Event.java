@@ -11,14 +11,23 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "event_id")
     private Long id;
-    private LocalDate registrationStartDate;
-    private LocalDate registrationEndDate;
     private String name;
     private String description;
+    private LocalDate creationDate;
+    private LocalDate registrationStartDate;
+    private LocalDate registrationEndDate;
     @ManyToMany
     private List<User> admins;
     @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
     private List<RegistrationRequest> registrationRequestList;
+
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
+    }
 
     public Event() {
     }

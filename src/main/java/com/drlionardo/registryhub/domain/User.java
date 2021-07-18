@@ -15,27 +15,11 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private String username;
     private String email;
     private String password;
     private String activationCode;
-    private boolean active;
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public String getActivationCode() {
-        return activationCode;
-    }
-
-    public void setActivationCode(String activationCode) {
-        this.activationCode = activationCode;
-    }
-
+    private boolean emailValidated;
     @OneToMany(mappedBy = "owner")
     private List<RegistrationRequest> requestList;
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
@@ -57,7 +41,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override
@@ -77,15 +61,15 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return active;
+        return true;
     }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -98,6 +82,22 @@ public class User implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
+    }
+
+    public boolean isEmailValidated() {
+        return emailValidated;
+    }
+
+    public void setEmailValidated(boolean emailValidated) {
+        this.emailValidated = emailValidated;
     }
 
     public List<RegistrationRequest> getRequestList() {
@@ -116,6 +116,13 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
+    public boolean isAdmin() {
+        return roles.contains(Role.ADMIN);
+    }
+
+    public boolean isCreator() {
+        return roles.contains(Role.CREATOR);
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -6,6 +6,9 @@
     <div>
         <form method="post" action="/registration">
             <div>
+                <label>Username:</label> <input type="text" name="username">
+            </div>
+            <div>
                 <label>Email:</label> <input type="email" name="email">
             </div>
             <div>

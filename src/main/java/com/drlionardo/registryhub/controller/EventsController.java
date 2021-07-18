@@ -76,7 +76,7 @@ public class EventsController {
 
     @PostMapping("/event/{id}/deleteAdmin")
     public String deleteAdminFromEvent(@PathVariable Long id, Long adminId) {
-        eventService.deleteAdminFromEvent(id, adminId);
+        eventService.removeAdminFromEvent(id, adminId);
         return "redirect:/event/{id}";
     }
     @PostMapping("/event/{id}/addAdmin")
