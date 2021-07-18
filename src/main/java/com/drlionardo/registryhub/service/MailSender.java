@@ -2,6 +2,7 @@ package com.drlionardo.registryhub.service;
 
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,7 +12,7 @@ public class MailSender {
     public MailSender(JavaMailSender javaMailSender) {
         this.mailSender = javaMailSender;
     }
-
+    @Async
     public void sendMessage(String emailTo, String subject, String message) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setFrom("admin@drlionardo.software");
