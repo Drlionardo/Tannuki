@@ -6,7 +6,7 @@
     <div>
         <form method="post" action="/registration">
             <div>
-                <label>Email:</label> <input type="text" name="email">
+                <label>Email:</label> <input type="email" name="email">
             </div>
             <div>
                 <label>Password:</label> <input type="password" name="password">

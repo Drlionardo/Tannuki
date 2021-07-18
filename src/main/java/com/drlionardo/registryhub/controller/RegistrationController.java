@@ -1,25 +1,20 @@
 package com.drlionardo.registryhub.controller;
 
-import com.drlionardo.registryhub.domain.Role;
 import com.drlionardo.registryhub.domain.User;
-import com.drlionardo.registryhub.repo.UserRepo;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.drlionardo.registryhub.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.Collections;
-import java.util.Optional;
 
 @Controller
 public class RegistrationController {
-    private UserRepo userRepo;
-    private PasswordEncoder passwordEncoder;
+    private UserService userService;
 
-    public RegistrationController(PasswordEncoder passwordEncoder, UserRepo userRepo) {
-        this.passwordEncoder = passwordEncoder;
-        this.userRepo = userRepo;
+    public RegistrationController(UserService userService) {
+        this.userService = userService;
     }
 
     @GetMapping("/registration")
@@ -29,16 +24,28 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public String registerUser(User user, Model model) {
-        Optional<User> userFromDb  = userRepo.findUserByEmail(user.getEmail());
-        if(userFromDb.isPresent()) {
+        boolean status = userService.registerUser(user);
+        if(status) {
             model.addAttribute("responseMessage","User with this email already exists!");
             return "registration";
+        } else {
+            model.addAttribute("userId", user.getId());
+            model.addAttribute("responseMessage",
+                    "To activate check your email and locate the confirmation email");
+            return "emailValidation";
+        }
+    }
+    
+    @GetMapping("/activate/{code}")
+    public String activateUser(@PathVariable String code, Model model) {
+        if(userService.activateUser(code)) {
+            model.addAttribute("responseMessage", "Your account has been activated!");
         }
         else {
-            user.setRoles(Collections.singleton(Role.USER));
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            userRepo.save(user);
+            model.addAttribute("responseMessage", "Error! Unable to activate account!");
+
         }
-        return "redirect:/login";
+        return "login";
+
     }
 }

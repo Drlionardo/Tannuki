@@ -15,5 +15,6 @@
                 <button type="submit">Login</button>
             </div>
         </form>
+        ${responseMessage!}
     </div>
 </@tmpl.page>
