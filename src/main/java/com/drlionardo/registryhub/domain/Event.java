@@ -1,10 +1,10 @@
 package com.drlionardo.registryhub.domain;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Event {
@@ -20,8 +20,7 @@ public class Event {
     @ManyToMany
     private List<User> admins;
     @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
-    private List<RegistrationRequest> registrationRequestList;
-
+    private Set<RegistrationRequest> registrationRequestList;
 
     public Event() {
     }
@@ -82,11 +81,11 @@ public class Event {
         this.admins = admins;
     }
 
-    public List<RegistrationRequest> getRegistrationRequestList() {
+    public Set<RegistrationRequest> getRegistrationRequestList() {
         return registrationRequestList;
     }
 
-    public void setRegistrationRequestList(List<RegistrationRequest> registrationRequestList) {
+    public void setRegistrationRequestList(Set<RegistrationRequest> registrationRequestList) {
         this.registrationRequestList = registrationRequestList;
     }
 

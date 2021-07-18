@@ -16,7 +16,7 @@
     <div> All users:
 
     <#list requestList as req>
-        <div>${req.owner.username}  ${req.registrationTime}</div>
+        <div><a href="/profile/${req.owner.id}">${req.owner.username} </a> ${req.registrationTime}</div>
     </#list>
     </div>
 
