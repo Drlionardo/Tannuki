@@ -26,7 +26,7 @@ public class RegistrationController {
 
     @GetMapping("/registration")
     public String getRegisterPage() {
-        return "registration";
+        return "authorization/registration";
     }
 
     @PostMapping("/registration")
@@ -35,12 +35,12 @@ public class RegistrationController {
             userService.registerUser(user);
         } catch (EmailAlreadyExistsException e) {
             model.addAttribute("responseMessage", "User with this email already exists!");
-            return "registration";
+            return "authorization/registration";
         } catch (UsernameAlreadyExistsException e) {
             model.addAttribute("responseMessage", "User with this username already exists!");
-            return "registration";
+            return "authorization/registration";
         }
-        return "redirect:/login";
+        return "redirect:/authorization/login";
     }
 
     @PostMapping("/profile/{id}/repeatEmailActivation")
@@ -58,7 +58,7 @@ public class RegistrationController {
         } else {
             model.addAttribute("responseMessage", "Error! Unable to activate account!");
         }
-        return "login";
+        return "authorization/login";
     }
 
     @GetMapping("/profile/{id}")
