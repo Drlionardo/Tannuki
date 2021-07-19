@@ -10,6 +10,7 @@ isAuthorized = Session.SPRING_SECURITY_CONTEXT??
 <#else >
     <#assign
     activeUser = "unknown"
+    username = "-"
     isAdmin = false
     >
 </#if>
