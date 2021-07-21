@@ -25,9 +25,9 @@ jobs:
       - name: Set up PostgreSQL test server
         uses: harmon758/postgresql-action@v1
         with:
-          postgres db: registryhub
-          postgres user: registryhubAdmin
-          postgres password: admin
+          postgresql db: registryhub
+          postgresql user: registryhubAdmin
+          postgresql password: admin
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
