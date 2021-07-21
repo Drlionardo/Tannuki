@@ -1,0 +1,38 @@
+
+name: Run unit tests
+env: 
+    APP_URL: ${{ secrets.APP_URL }} 
+    SMTP_SERVER: ${{ secrets.SMTP_SERVER }} 
+    MAILGUN_SMTP_PORT: ${{ secrets.MAILGUN_SMTP_PORT }} 
+    MAILGUN_SMTP_LOGIN: ${{ secrets.MAILGUN_SMTP_LOGIN }} 
+    MAILGUN_SMTP_PASSWORD: ${{ secrets.MAILGUN_SMTP_PASSWORD }} 
+    SPRING_DATASOURCE_UR: ${{ secrets.SPRING_DATASOURCE_UR }} 
+on:
+  push:
+    branches:
+    - main
+jobs:
+  run_tests:
+    environment: registry-hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Set up JDK 16
+        uses: actions/setup-java@v1
+        with:
+          java-version: 16
+      - name: Set up PostgreSQL test server
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql db: registryhub
+          postgresql user: registryhubAdmin
+          postgresql password: admin
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Run tests with Maven
+        run: mvn -B test --file pom.xml
