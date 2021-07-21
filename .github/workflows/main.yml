@@ -13,6 +13,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 16
+      - name: Set up PostgreSQL test server
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql version: '11'
+          POSTGRES_DB: registryhub
+          POSTGRES_USER: registryhubAdmin
+          POSTGRES_PASSWORD: admin
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
