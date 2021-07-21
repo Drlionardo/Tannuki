@@ -1,5 +1,12 @@
 
 name: Run unit tests
+env: 
+    APP_URL: ${{ secrets.APP_URL }} 
+    SMTP_SERVER: ${{ secrets.SMTP_SERVER }} 
+    MAILGUN_SMTP_PORT: ${{ secrets.MAILGUN_SMTP_PORT }} 
+    MAILGUN_SMTP_LOGIN: ${{ secrets.MAILGUN_SMTP_LOGIN }} 
+    MAILGUN_SMTP_PASSWORD: ${{ secrets.MAILGUN_SMTP_PASSWORD }} 
+    SPRING_DATASOURCE_UR: ${{ secrets.SPRING_DATASOURCE_UR }} 
 on:
   push:
     branches:
@@ -18,9 +25,9 @@ jobs:
       - name: Set up PostgreSQL test server
         uses: harmon758/postgresql-action@v1
         with:
-          postgres_db: registryhub
-          postgres_user: registryhubAdmin
-          postgres_password: admin
+          postgres db: registryhub
+          postgres user: registryhubAdmin
+          postgres password: admin
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
