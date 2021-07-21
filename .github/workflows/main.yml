@@ -10,7 +10,7 @@ env:
 on:
   push:
     branches:
-    - action-test
+    - main
 jobs:
   run_tests:
     environment: registry-hub
