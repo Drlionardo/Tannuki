@@ -1,0 +1,31 @@
+
+name: Run unit tests
+on:
+  push:
+    branches:
+    - action-test
+jobs:
+  run_tests:
+    environment: registry-hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Set up JDK 16
+        uses: actions/setup-java@v1
+        with:
+          java-version: 16
+      - name: Set up PostgreSQL test server
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgres_db: registryhub
+          postgres_user: registryhubAdmin
+          postgres_password: admin
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Run tests with Maven
+        run: mvn -B test --file pom.xml
