@@ -44,3 +44,7 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
+.btn-primary-github {
+  background-color: #6e5494;
+  border-color: #6e5494;
+}
