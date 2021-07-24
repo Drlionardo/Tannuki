@@ -6,11 +6,13 @@ authorized = Session.SPRING_SECURITY_CONTEXT??
     user = Session.SPRING_SECURITY_CONTEXT.authentication.principal
     username = user.getUsername()
     isAdmin = user.isAdmin()
+    isCreator = user.isCreator()
     >
 <#else >
     <#assign
     username = "unknown"
     isAdmin = false
+    isCreator = false
     >
 </#if>
 
@@ -28,20 +30,28 @@ authorized = Session.SPRING_SECURITY_CONTEXT??
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/main">All vents</a>
                 </li>
+                <#if authorized>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">My events</a>
+                    <a class="nav-link" href="/profile/${user.getId()}">My events</a>
                 </li>
-                <#if isAdmin>
-                    <!-- Admin only-->
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Admin page</a>
-                    </li>
+                    <#if true>
+                        <!-- Admin only-->
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Admin page</a>
+                        </li>
+                    </#if>
+                    <#if true>
+                        <!-- Creator only-->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/editor/main">Creator page</a>
+                        </li>
+                    </#if>
                 </#if>
             </ul>
             <ul class="navbar-nav">
                 <#if authorized>
                     <li class="nav-item">
-                        <a class="nav-link" href="profile/${user.getId()}">${username}</a>
+                        <a class="nav-link" href="/profile/${user.getId()}">${username}</a>
                     </li>
                     <form method="post" action="/logout">
                         <input type="hidden" name="_csrf" value=${_csrf.token}>
@@ -54,6 +64,5 @@ authorized = Session.SPRING_SECURITY_CONTEXT??
                 </#if>
             </ul>
         </div>
-
     </div>
 </nav>

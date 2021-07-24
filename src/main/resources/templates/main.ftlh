@@ -1,36 +1,31 @@
 <#import "macro/template.ftlh" as tmpl>
 <@tmpl.page>
-    <div class="container">
-            <div class="col-xl mt-5">
-                <h2>Hello, world</h2>
-                <h3>Add event:</h3>
-                <form method="post" action="/main">
-                    Name<input type="text" name="name">
-                    Description<input type="text" name="description">
-                    <input type="hidden" name="_csrf" value=${_csrf.token}>
-                    <button type="submit">Create event</button>
-                </form>
-                <#list events as event>
-                    <div>Id:${event.id} <a href="event/${event.id}">Link</a> </div>
-                    <div>Name:${event.name}</div>
-                    <div>
-                        Admins:
-                        <#list event.admins as admin>admin</#list>
+    <div class="container mt-5">
+        <h3>Add event:</h3>
+        <form method="post" action="/main">
+            Name<input type="text" name="name">
+            Description<input type="text" name="description">
+            <input type="hidden" name="_csrf" value=${_csrf.token}>
+            <button type="submit">Create event</button>
+        </form>
+        <div class="card-group">
+            <div class="row row-cols-1 row-cols-md-3">
+            <#list events as event>
+                    <div class="col mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                Featured
+                            </div>
+                            <img src="${event.image!"/img/defaultEventImage.png"}" class="card-img-top" alt="Event image">
+                            <div class="card-body ">
+                                <h5 class="card-title">${event.name}</h5>
+                                <p class="card-text">${event.description}</p>
+                                <p class="card-text"><a href="event/${event.id}" class="btn btn-primary p-2">Visit</a> <small class="text-muted">${event.id}</small></p>
+                            </div>
+                        </div>
                     </div>
-                    <div>Description:${event.description}</div>
-                </#list>
-
-                <div class="card bg-light mb-3" style="max-width: 18rem;">
-                    <div class="card-header">Header</div>
-                    <div class="card-body">
-                        <h5 class="card-title">Light card title</h5>
-                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    </div>
-                </div>
+            </#list>
             </div>
         </div>
     </div>
-<div class="main-content">
-
-</div>
 </@tmpl.page>

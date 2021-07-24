@@ -1,5 +1,7 @@
 package com.drlionardo.registryhub.service;
 
+import com.drlionardo.registryhub.domain.Event;
+import com.drlionardo.registryhub.domain.RegistrationRequest;
 import com.drlionardo.registryhub.domain.Role;
 import com.drlionardo.registryhub.domain.User;
 import com.drlionardo.registryhub.exceptions.EmailAlreadyExistsException;
@@ -125,4 +127,9 @@ public class UserService implements UserDetailsService {
         }
         userRepo.save(user);
     }
+    public List<Event> getRegisteredEventsByUserId(Long id) {
+        User user = findUserById(id);
+        return user.getRequestList().stream().map(RegistrationRequest::getEvent).collect(Collectors.toList());
+    }
+
 }

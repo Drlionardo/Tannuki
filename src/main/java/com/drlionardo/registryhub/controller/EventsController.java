@@ -28,14 +28,6 @@ public class EventsController {
         return "main";
     }
 
-    @PostMapping("/main")
-        public String addEvent(@AuthenticationPrincipal User admin,
-                               @RequestParam String name,
-                               @RequestParam String description) {
-        eventService.addEvent(admin, name, description);
-        return "redirect:/main";
-    }
-
     @PostMapping("event/{id}/register")
     public String registerForEvent(@PathVariable Long id, @AuthenticationPrincipal User user,
                                    Model model) {
@@ -59,30 +51,4 @@ public class EventsController {
         model.addAttribute("isRegistered",eventService.isUserRegistered(user, event));
         return "eventPage";
     }
-
-    @GetMapping("event/{id}/edit")
-    public String eventPageEditor(@PathVariable Long id, @AuthenticationPrincipal User user,
-                            Model model) {
-        model.addAttribute("event", eventService.findById(id));
-        model.addAttribute("user", user);
-        return "eventEditor";
-    }
-
-    @PostMapping("event/{id}/edit")
-    public String editEvent(@PathVariable Long id, String eventName, String eventDescription) {
-        eventService.updateEvent(id, eventName, eventDescription);
-        return "redirect:/event/{id}";
-    }
-
-    @PostMapping("/event/{id}/deleteAdmin")
-    public String deleteAdminFromEvent(@PathVariable Long id, Long adminId) {
-        eventService.removeAdminFromEvent(id, adminId);
-        return "redirect:/event/{id}";
-    }
-    @PostMapping("/event/{id}/addAdmin")
-    public String addAdminToEvent(@PathVariable Long id, String adminEmail) {
-        eventService.addAdminToEvent(id, adminEmail);
-        return "redirect:/event/{id}";
-    }
-
 }

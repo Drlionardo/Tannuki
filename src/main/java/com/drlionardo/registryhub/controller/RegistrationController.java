@@ -61,12 +61,7 @@ public class RegistrationController {
         return "authorization/login";
     }
 
-    @GetMapping("/profile/{id}")
-    public String userProfile(@PathVariable Long id, Model model) {
-        model.addAttribute("roles", Role.values());
-        model.addAttribute("user", userService.findUserById(id));
-        return "userProfile";
-    }
+
 
     @PostMapping("/profile/{id}/changeEmail")
     public String changeEmail(@PathVariable Long id, String newEmail, Model model) {
@@ -93,4 +88,5 @@ public class RegistrationController {
         userService.updateRoles(id, form);
         return "redirect:/profile/{id}";
     }
+
 }

@@ -91,4 +91,8 @@ public class EventService {
         eventFromDb.setDescription(eventDescription);
         eventRepo.save(eventFromDb);
     }
+
+    public List<Event> getEventsByCreator(User user) {
+        return eventRepo.findAllByAdminsContains(user);
+    }
 }
