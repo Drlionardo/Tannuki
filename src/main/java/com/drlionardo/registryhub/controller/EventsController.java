@@ -1,7 +1,10 @@
 package com.drlionardo.registryhub.controller;
 
+import com.drlionardo.registryhub.domain.Comment;
 import com.drlionardo.registryhub.domain.Event;
+import com.drlionardo.registryhub.domain.EventPost;
 import com.drlionardo.registryhub.domain.User;
+import com.drlionardo.registryhub.service.EventPostService;
 import com.drlionardo.registryhub.service.EventService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -11,10 +14,12 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class EventsController {
-    private EventService eventService;
+    private final EventService eventService;
+    private final EventPostService postService;
 
-    public EventsController(EventService eventService) {
+    public EventsController(EventService eventService, EventPostService postService) {
         this.eventService = eventService;
+        this.postService = postService;
     }
 
     @GetMapping
@@ -47,8 +52,19 @@ public class EventsController {
         Event event = eventService.findById(id);
         model.addAttribute("event", event);
         model.addAttribute("requestList", event.getRegistrationRequestList());
+        model.addAttribute("postList", event.getPosts());
         model.addAttribute("user", user);
         model.addAttribute("isRegistered",eventService.isUserRegistered(user, event));
         return "eventPage";
     }
+    @PostMapping("event/{eventId}/post/{postId}/addComment")
+    public String addCommentToEventPost(@PathVariable Long eventId,
+                                        @PathVariable Long postId,
+                                        @RequestParam String commentText,
+                                        @AuthenticationPrincipal User user) {
+        EventPost eventPost = eventService.findEventPostById(postId);
+        postService.addComment(user, eventPost, commentText);
+        return "redirect:/event/{eventId}";
+    }
+
 }

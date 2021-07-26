@@ -35,23 +35,42 @@
             <@sidebar.editorList></@sidebar.editorList>
         </div>
         <div class="container mt-5">
-            <h2>Event info:</h2>
-            <div>Id:${selectedEvent.id}</div>
-            <div>Name:${selectedEvent.name}</div>
-            <div>
-                Admins:
-                <#list selectedEvent.admins as admin>
-                    ${admin.username}
-                </#list>
-            </div>
-            <div>Description:${selectedEvent.description}</div>
+            <h3>Add Post:</h3>
+            <form method="post" action="/editor/event/${selectedEvent.id}/post">
+                <div class="form-group">
+                    <label for="formGroupExampleInput">Post name</label>
+                    <input name="title" type="text" class="form-control" id="formGroupExampleInput">
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlTextarea1">Description</label>
+                    <textarea name="text" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                </div>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="customFile">
+                    <label class="custom-file-label" for="customFile">Choose post image</label>
+                </div>
+                <input type="hidden" name="_csrf" value=${_csrf.token}>
+                <button type="submit" class="btn btn-primary">Add post</button>
+            </form>
+        </div>
+    </div>
 
-            <div> All users:
+    <div class="container mt-5">
+        <h2>Event info:</h2>
+        <div>Id:${selectedEvent.id}</div>
+        <div>Name:${selectedEvent.name}</div>
+        <div>
+            Admins:
+            <#list selectedEvent.admins as admin>
+                ${admin.username}
+            </#list>
+        </div>
+        <div>Description:${selectedEvent.description}</div>
 
-                <#list requestList as req>
-                    <div><a href="/profile/${req.owner.id}">${req.owner.username} </a> ${req.registrationTime}</div>
-                </#list>
-            </div>
+        <div> All users:
+            <#list requestList as req>
+                <div><a href="/profile/${req.owner.id}">${req.owner.username} </a> ${req.registrationTime}</div>
+            </#list>
         </div>
     </div>
 </@tmpl.page>

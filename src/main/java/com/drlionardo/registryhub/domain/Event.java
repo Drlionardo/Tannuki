@@ -19,8 +19,10 @@ public class Event {
     private LocalDateTime registrationEndDate;
     @ManyToMany
     private List<User> admins;
-    @OneToMany(mappedBy = "event", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "event")
     private Set<RegistrationRequest> registrationRequestList;
+    @OneToMany(mappedBy = "event")
+    private List<EventPost> posts;
 
     public Event() {
     }
@@ -87,6 +89,14 @@ public class Event {
 
     public void setRegistrationRequestList(Set<RegistrationRequest> registrationRequestList) {
         this.registrationRequestList = registrationRequestList;
+    }
+
+    public List<EventPost> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<EventPost> posts) {
+        this.posts = posts;
     }
 
     @Override

@@ -1,16 +1,9 @@
 <#import "macro/template.ftlh" as tmpl>
 <@tmpl.page>
     <div class="container mt-5">
-        <h3>Add event:</h3>
-        <form method="post" action="/main">
-            Name<input type="text" name="name">
-            Description<input type="text" name="description">
-            <input type="hidden" name="_csrf" value=${_csrf.token}>
-            <button type="submit">Create event</button>
-        </form>
         <div class="card-group">
             <div class="row row-cols-1 row-cols-md-3">
-            <#list events as event>
+                <#list events as event>
                     <div class="col mb-4">
                         <div class="card">
                             <div class="card-header">
@@ -24,7 +17,7 @@
                             </div>
                         </div>
                     </div>
-            </#list>
+                </#list>
             </div>
         </div>
     </div>

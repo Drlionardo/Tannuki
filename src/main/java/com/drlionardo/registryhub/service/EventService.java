@@ -1,8 +1,10 @@
 package com.drlionardo.registryhub.service;
 
 import com.drlionardo.registryhub.domain.Event;
+import com.drlionardo.registryhub.domain.EventPost;
 import com.drlionardo.registryhub.domain.RegistrationRequest;
 import com.drlionardo.registryhub.domain.User;
+import com.drlionardo.registryhub.repo.EventPostRepo;
 import com.drlionardo.registryhub.repo.EventRepo;
 import com.drlionardo.registryhub.repo.RegistrationRequestRepo;
 import org.springframework.http.HttpStatus;
@@ -10,19 +12,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class EventService {
-    private EventRepo eventRepo;
-    private UserService userService;
-    private RegistrationRequestRepo requestRepo;
+    private final EventRepo eventRepo;
+    private final EventPostRepo postRepo;
+    private final UserService userService;
+    private final RegistrationRequestRepo requestRepo;
 
-    public EventService(EventRepo eventRepo, UserService userService, RegistrationRequestRepo requestRepo) {
+    public EventService(EventRepo eventRepo, EventPostRepo postRepo, UserService userService, RegistrationRequestRepo requestRepo) {
         this.eventRepo = eventRepo;
+        this.postRepo = postRepo;
         this.userService = userService;
         this.requestRepo = requestRepo;
     }
@@ -94,5 +97,9 @@ public class EventService {
 
     public List<Event> getEventsByCreator(User user) {
         return eventRepo.findAllByAdminsContains(user);
+    }
+
+    public EventPost findEventPostById(Long postId) {
+        return postRepo.findById(postId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 }
