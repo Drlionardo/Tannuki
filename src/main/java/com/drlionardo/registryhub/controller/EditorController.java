@@ -1,7 +1,6 @@
 package com.drlionardo.registryhub.controller;
 
 import com.drlionardo.registryhub.domain.Event;
-import com.drlionardo.registryhub.domain.EventPost;
 import com.drlionardo.registryhub.domain.User;
 import com.drlionardo.registryhub.service.EventPostService;
 import com.drlionardo.registryhub.service.EventService;
