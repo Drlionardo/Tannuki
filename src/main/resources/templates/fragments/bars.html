@@ -22,7 +22,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/main">All vents</a>
+                    <a class="nav-link active" aria-current="page" href="/events">All vents</a>
                 </li>
                 <li sec:authorize="isAuthenticated()" class="nav-item" >
                     <a class="nav-link" href="/profile/${user.getId()}" th:href="@{/profile(id=${#authentication.principal.id})}">My events</a>
@@ -41,7 +41,7 @@
                 <li>
                     <form method="post" th:action="@{/logout}">
                         <button class="btn btn-primary ml-2" type="submit">Log out</button>
-                    </form>"/authorization/login"
+                    </form>
                 </li>
             </ul>
             <ul sec:authorize="isAnonymous()" class="navbar-nav">
