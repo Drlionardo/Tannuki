@@ -1,6 +1,5 @@
 package com.drlionardo.registryhub.controller;
 
-import com.drlionardo.registryhub.domain.Comment;
 import com.drlionardo.registryhub.domain.Event;
 import com.drlionardo.registryhub.domain.EventPost;
 import com.drlionardo.registryhub.domain.User;
@@ -10,6 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -23,48 +23,55 @@ public class EventsController {
     }
 
     @GetMapping
-    public String greet() {
+    public String welcomePage() {
         return "about";
     }
 
-    @GetMapping("/main")
+    @GetMapping("events")
     public String allEvents(Model model) {
         model.addAttribute("events", eventService.findAll());
-        return "main";
+        return "events";
     }
 
-    @PostMapping("event/{id}/register")
-    public String registerForEvent(@PathVariable Long id, @AuthenticationPrincipal User user,
-                                   Model model) {
-        eventService.registerUserForEvent(user, eventService.findById(id));
-        return "redirect:/event/{id}";
-    }
-
-    @PostMapping("event/{id}/cancel")
-    public String cancelRegistration(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        eventService.cancelRegistration(user, eventService.findById(id));
-        return "redirect:/event/{id}";
-    }
-
-    @GetMapping("event/{id}")
-    public String eventPage(@PathVariable Long id, @AuthenticationPrincipal User user,
+    @GetMapping("event")
+    public String eventPage(@RequestParam Long id, @AuthenticationPrincipal User user,
                             Model model) {
         Event event = eventService.findById(id);
         model.addAttribute("event", event);
         model.addAttribute("requestList", event.getRegistrationRequestList());
         model.addAttribute("postList", event.getPosts());
         model.addAttribute("user", user);
-        model.addAttribute("isRegistered",eventService.isUserRegistered(user, event));
+        if(user != null) {
+            model.addAttribute("isRegistered", eventService.isUserRegistered(user, event));
+        }
         return "eventPage";
     }
-    @PostMapping("event/{eventId}/post/{postId}/addComment")
-    public String addCommentToEventPost(@PathVariable Long eventId,
-                                        @PathVariable Long postId,
-                                        @RequestParam String commentText,
-                                        @AuthenticationPrincipal User user) {
-        EventPost eventPost = eventService.findEventPostById(postId);
-        postService.addComment(user, eventPost, commentText);
-        return "redirect:/event/{eventId}";
+
+    @PostMapping("event/register")
+    public String registerForEvent(@RequestParam Long id, @AuthenticationPrincipal User user,
+                                   RedirectAttributes redirectAttributes) {
+        eventService.registerUserForEvent(user, eventService.findById(id));
+        redirectAttributes.addAttribute("id", id);
+        return "redirect:/event";
     }
 
+    @PostMapping("event/cancel")
+    public String cancelRegistration(@RequestParam Long id, @AuthenticationPrincipal User user,
+                                     RedirectAttributes redirectAttributes) {
+        eventService.cancelRegistration(user, eventService.findById(id));
+        redirectAttributes.addAttribute("id", id);
+        return "redirect:/event";
+    }
+
+    @PostMapping("event/addComment")
+    public String addCommentToEventPost(@RequestParam Long eventId,
+                                        @RequestParam Long postId,
+                                        @RequestParam String commentText,
+                                        @AuthenticationPrincipal User user,
+                                        RedirectAttributes redirectAttributes) {
+        EventPost eventPost = eventService.findEventPostById(postId);
+        postService.addComment(user, eventPost, commentText);
+        redirectAttributes.addAttribute("id", eventId);
+        return "redirect:/event";
+    }
 }
