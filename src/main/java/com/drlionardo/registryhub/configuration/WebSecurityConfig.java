@@ -25,7 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/main","/","/logout", "/event/**", "/registration", "/static/**", "/img/**", "/activate/**").permitAll()
+                .antMatchers("/main","/","/logout", "/event/**", "/registration", "/static/**", "/img/**","/profile/repeatEmailActivation/**", "/activate/**").permitAll()
                 .anyRequest().authenticated()
                 .and().
                     rememberMe()
@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .formLogin()
                     .loginPage("/login.html")
                     .failureUrl("/login-error.html")
-                    .defaultSuccessUrl("/main", false)
+                    .defaultSuccessUrl("/events", true)
                     .permitAll()
                 .and()
                     .logout()

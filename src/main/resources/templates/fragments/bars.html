@@ -27,11 +27,11 @@
                 <li sec:authorize="isAuthenticated()" class="nav-item" >
                     <a class="nav-link" href="/profile/${user.getId()}" th:href="@{/profile(id=${#authentication.principal.id})}">My events</a>
                 </li>
-                <li sec:authorize="hasRole('ADMIN')" class="nav-item">
+                <li sec:authorize="hasAuthority('ADMIN')" class="nav-item">
                     <a class="nav-link" href="#">Admin page</a>
                 </li>
-                <li sec:authorize="hasRole('CREATOR')" class="nav-item">
-                    <a class="nav-link" href="/editor/main">Creator page</a>
+                <li sec:authorize="hasAuthority('CREATOR')" class="nav-item">
+                    <a class="nav-link" href="/editor">Creator page</a>
                 </li>
             </ul>
             <ul sec:authorize="isAuthenticated()" class="navbar-nav">
@@ -68,24 +68,6 @@
                 <p class="col-10 mb-1 small" th:text="${selectedEvent.description}">Event description</p>
             </a>
             <a th:each="event : ${creatorEvents}" href="#" class="list-group-item list-group-item-action py-3 lh-tight">
-                <div class="d-flex w-100 align-items-center justify-content-between">
-                    <strong class="mb-1" th:text="${event.name}">Event name</strong>
-                    <small th:text="${event.id}">12</small>
-                </div>
-                <p class="col-10 mb-1 small" th:text="${event.description}">Event description</p>
-            </a>
-        </div>
-    </div>
-</div>
-
-<div th:fragment="userSidebar" class="col-md-4 themed-grid-col">
-    <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white" style="width: 380px;">
-        <a href="/" class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
-            <svg class="bi me-2" width="30" height="24"><use xlink:href="#bootstrap"/></svg>
-            <span class="fs-5 fw-semibold">My events</span>
-        </a>
-        <div class="list-group list-group-flush border-bottom scrollarea">
-            <a th:each="event : ${userEvents}" href="#" class="list-group-item list-group-item-action py-3 lh-tight">
                 <div class="d-flex w-100 align-items-center justify-content-between">
                     <strong class="mb-1" th:text="${event.name}">Event name</strong>
                     <small th:text="${event.id}">12</small>

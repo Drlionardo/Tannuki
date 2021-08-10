@@ -50,49 +50,4 @@ public class AuthorizationController {
         }
         return "redirect:/authorization/login";
     }
-
-    @PostMapping("/profile/{id}/repeatEmailActivation")
-    public String repeatActivationEmailMessage(@PathVariable Long id, Model model) {
-        userService.repeatActivationEmailMessage(id);
-        model.addAttribute("responseMessage", "Email with activation was sent again");
-        model.addAttribute("user", userService.findUserById(id));
-        return "userProfile";
-    }
-
-    @GetMapping("/activate/{code}")
-    public String activateUser(@PathVariable String code, Model model) {
-        if (userService.activateUser(code)) {
-            model.addAttribute("responseMessage", "Your account has been activated!");
-        } else {
-            model.addAttribute("responseMessage", "Error! Unable to activate account!");
-        }
-        return "authorization/login";
-    }
-
-    @PostMapping("/profile/{id}/changeEmail")
-    public String changeEmail(@PathVariable Long id, String newEmail, Model model) {
-        userService.changeEmailWithValidation(id, newEmail);
-        model.addAttribute("user",userService.findUserById(id));
-        return "userProfile";
-    }
-
-    @PostMapping("/profile/{id}/changePassword")
-    public String changePassword(@PathVariable Long id, String oldPassword, String newPassword, Model model) {
-        try {
-            userService.changePassword(id, oldPassword, newPassword);
-            model.addAttribute("responseMessage", "Password has been changed");
-        } catch (WrongPasswordException e) {
-            model.addAttribute("responseMessage", "Incorrect old password, please try again");
-        }
-        model.addAttribute("user",userService.findUserById(id));
-
-        return "userProfile";
-    }
-
-    @PostMapping("profile/{id}/updateRoles")
-    public String updateRoles(@PathVariable Long id, @RequestParam Map<String, String> form, Model model) {
-        userService.updateRoles(id, form);
-        return "redirect:/profile/{id}";
-    }
-
 }
