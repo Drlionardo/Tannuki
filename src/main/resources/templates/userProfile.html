@@ -78,7 +78,7 @@
                 <div class="col"  th:each="event : ${registeredEvents}">
                     <div class="card h-100">
                         <div class="card-body ">
-                            <h5 class="card-title" th:text="${event.name}"></h5>
+                            <h5 class="card-title" th:text="${event.title}"></h5>
                             <p class="card-text" th:text="${event.description}"></p>
                             <p class="card-text" >
                                 <a th:href="@{event(id=${event.id})}" class="btn btn-primary p-2">Visit</a>

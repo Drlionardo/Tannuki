@@ -39,7 +39,7 @@ public class EventService {
 
     public void addEvent(User admin, String name, String description) {
         Event event = new Event();
-        event.setName(name);
+        event.setTitle(name);
         event.setDescription(description);
         event.setCreationDate(LocalDateTime.now());
         var adminList = new ArrayList<User>();
@@ -90,7 +90,7 @@ public class EventService {
 
     public void updateEvent(Long eventId, String eventName, String eventDescription) {
         Event eventFromDb = eventRepo.getById(eventId);
-        eventFromDb.setName(eventName);
+        eventFromDb.setTitle(eventName);
         eventFromDb.setDescription(eventDescription);
         eventRepo.save(eventFromDb);
     }

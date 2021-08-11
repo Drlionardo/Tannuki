@@ -18,7 +18,7 @@
                 <img src="/img/defaultEventImage.png" class="d-block mx-lg-auto img-fluid" alt="Event image" width="700" height="500" loading="lazy">
             </div>
             <div class="col-lg-6">
-                <h1 class="display-5 fw-bold lh-1 mb-3" th:text="${event.name}"></h1>
+                <h1 class="display-5 fw-bold lh-1 mb-3" th:text="${event.title}"></h1>
                 <p class="lead" th:text="${event.description}"></p>
                 <p class="lead" th:if="${event.registrationEndDate}" th:text="Регистрация заканчивается ${event.registrationEndDate}"></p>
                 <div sec:authorize="isAuthenticated()" class="d-grid gap-2 d-md-flex justify-content-md-start">

@@ -12,7 +12,7 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "event_id")
     private Long id;
-    private String name;
+    private String title;
     private String description;
     private LocalDateTime creationDate;
     private LocalDateTime registrationStartDate;
@@ -59,12 +59,12 @@ public class Event {
         this.registrationEndDate = registrationEndDate;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String name) {
+        this.title = name;
     }
 
     public String getDescription() {

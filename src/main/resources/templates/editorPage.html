@@ -51,7 +51,7 @@
                 </a>
                 <a th:each="event : ${creatorEvents}" th:href="@{/editor/edit (id = ${event.id})}" class="list-group-item list-group-item-action py-3 lh-tight">
                     <div class="d-flex w-100 align-items-center justify-content-between">
-                        <strong class="mb-1" th:text="${event.name}">Event name</strong>
+                        <strong class="mb-1" th:text="${event.title}">Event name</strong>
                         <small th:text="${event.id}">12</small>
                     </div>
                     <p class="col-10 mb-1 small" th:text="${event.description}">Event description</p>

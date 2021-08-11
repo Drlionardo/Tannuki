@@ -21,7 +21,7 @@
                 <div class="form-group row">
                     <label for="eventTitle" class="col-sm-2 col-form-label">Title</label>
                     <div class="col-sm-7">
-                        <input type="text" name="eventTitle" class="form-control" id="eventTitle" th:value="${selectedEvent.name}">
+                        <input type="text" name="eventTitle" class="form-control" id="eventTitle" th:value="${selectedEvent.title}">
                     </div>
                 </div>
                 <div class="form-group">
@@ -86,14 +86,14 @@
             <div class="list-group list-group-flush border-bottom scrollarea">
                 <a th:if="${selectedEvent}" href="#" class="list-group-item list-group-item-action active py-3 lh-tight" aria-current="true">
                     <div class="d-flex w-100 align-items-center justify-content-between">
-                        <strong class="mb-1" th:text="${selectedEvent.name}">Event name</strong>
+                        <strong class="mb-1" th:text="${selectedEvent.title}">Event name</strong>
                         <small th:text="${selectedEvent.id}">12</small>
                     </div>
                     <p class="col-10 mb-1 small" th:text="${selectedEvent.description}">Event description</p>
                 </a>
                 <a th:each="event : ${creatorEvents}" th:href="@{/editor/edit (id = ${event.id})}" class="list-group-item list-group-item-action py-3 lh-tight">
                     <div class="d-flex w-100 align-items-center justify-content-between">
-                        <strong class="mb-1" th:text="${event.name}">Event name</strong>
+                        <strong class="mb-1" th:text="${event.title}">Event name</strong>
                         <small th:text="${event.id}">12</small>
                     </div>
                     <p class="col-10 mb-1 small" th:text="${event.description}">Event description</p>
