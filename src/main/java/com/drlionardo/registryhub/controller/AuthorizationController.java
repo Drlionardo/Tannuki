@@ -20,14 +20,14 @@ public class AuthorizationController {
         this.userService = userService;
     }
 
-    @RequestMapping("login.html")
+    @RequestMapping("login")
     public String login() {
-        return "/authorization/login";
+        return "authorization/login";
     }
-    @RequestMapping("login-error.html")
+    @RequestMapping("login-error")
     public String loginError(Model model) {
         model.addAttribute("loginError", true);
-        return "/authorization/login";
+        return "authorization/login";
     }
 
     @GetMapping("/registration")
