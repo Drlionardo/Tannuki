@@ -3,7 +3,10 @@ package com.drlionardo.registryhub.controller;
 import com.drlionardo.registryhub.domain.Role;
 import com.drlionardo.registryhub.domain.User;
 import com.drlionardo.registryhub.exceptions.WrongPasswordException;
+import com.drlionardo.registryhub.service.EventService;
 import com.drlionardo.registryhub.service.UserService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,17 +21,20 @@ import java.util.Map;
 @Controller
 public class ProfileController {
     private final UserService userService;
+    private final EventService eventService;
 
-    public ProfileController(UserService userService) {
+    public ProfileController(UserService userService, EventService eventService) {
         this.userService = userService;
+        this.eventService = eventService;
     }
 
     @GetMapping("/profile")
-    public String userProfile(@RequestParam Long id, @AuthenticationPrincipal User user, Model model) {
+    public String userProfile(@RequestParam Long id, @AuthenticationPrincipal User user, Model model,
+                              @PageableDefault Pageable pageable) {
         model.addAttribute("profileId", id);
         model.addAttribute("allRoles", Role.values());
         model.addAttribute("user", userService.findUserById(id));
-        model.addAttribute("registeredEvents", userService.getRegisteredEventsByUserId(user.getId()));
+        model.addAttribute("events", eventService.getRegisteredEventsByUserId(user.getId(), pageable));
         return "userProfile";
     }
     @PostMapping("/profile/changeEmail")

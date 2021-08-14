@@ -127,10 +127,6 @@ public class UserService implements UserDetailsService {
         }
         userRepo.save(user);
     }
-    public List<Event> getRegisteredEventsByUserId(Long id) {
-        User user = findUserById(id);
-        return user.getRequestList().stream().map(RegistrationRequest::getEvent).collect(Collectors.toList());
-    }
 
     public boolean checkPassword(String currentPassword, Long userId) {
         return passwordEncoder.matches(currentPassword, findUserById(userId).getPassword());

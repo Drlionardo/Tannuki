@@ -7,6 +7,8 @@ import com.drlionardo.registryhub.domain.User;
 import com.drlionardo.registryhub.repo.EventPostRepo;
 import com.drlionardo.registryhub.repo.EventRepo;
 import com.drlionardo.registryhub.repo.RegistrationRequestRepo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,8 +32,8 @@ public class EventService {
         this.requestRepo = requestRepo;
     }
 
-    public List<Event> findAll() {
-        return eventRepo.findAll();
+    public Page<Event> findAll(Pageable pageable) {
+        return eventRepo.findAll(pageable);
     }
     public Event findById(Long id) {
         return eventRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -76,30 +78,35 @@ public class EventService {
     }
 
     public void removeAdminFromEvent(Long eventId, Long adminId) {
-        Event eventFromDb = eventRepo.getById(eventId);
+        Event eventFromDb = findById(eventId);
         User removedAdmin = userService.findUserById(adminId);
         eventFromDb.getAdmins().remove(removedAdmin);
         eventRepo.save(eventFromDb);
     }
     public void addAdminToEvent(Long eventId, String adminEmail) {
-        Event eventFromDb = eventRepo.getById(eventId);
+        Event eventFromDb = findById(eventId);
         User addedAdmin = userService.findUserByEmail(adminEmail);
         eventFromDb.getAdmins().add(addedAdmin);
         eventRepo.save(eventFromDb);
     }
 
     public void updateEvent(Long eventId, String eventName, String eventDescription) {
-        Event eventFromDb = eventRepo.getById(eventId);
+        Event eventFromDb = findById(eventId);
         eventFromDb.setTitle(eventName);
         eventFromDb.setDescription(eventDescription);
         eventRepo.save(eventFromDb);
     }
 
-    public List<Event> getEventsByCreator(User user) {
-        return eventRepo.findAllByAdminsContains(user);
+    public Page<Event> getEventsByCreator(User user, Pageable pageable) {
+        return eventRepo.findAllByAdminsContains(user, pageable);
     }
 
     public EventPost findEventPostById(Long postId) {
         return postRepo.findById(postId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    public Page<Event> getRegisteredEventsByUserId(Long userId, Pageable pageable) {
+        User user = userService.findUserById(userId);
+        return  eventRepo.findByRegistrationRequestList_Owner(user, pageable);
     }
 }

@@ -10,25 +10,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<div th:replace="fragments/bars :: navbar"></div>
+<div th:replace="fragments/nav :: navbar"></div>
 <div class="row mt-5">
     <div class="col-md-3 themed-grid-col"></div>
     <div class="col-md-6 themed-grid-col">
         <div class="row row-cols-1 row-cols-md-1 g-4">
-            <div class="col"  th:each="event : ${events}">
-                <div class="card h-100">
-                    <div class="card-body ">
-                        <h5 class="card-title" th:text="${event.title}"></h5>
-                        <p class="card-text" th:text="${event.description}"></p>
-                        <p class="card-text" >
-                            <a th:href="@{event(id=${event.id})}" class="btn btn-primary p-2">Visit</a>
-                            <small class="text-muted" th:text="${event.id}"></small>
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <small class="text-muted">Last updated 3 mins ago</small>
-                    </div>
-                </div>
+            <div th:replace="fragments/eventLists :: eventCards (content = ${events})"></div>
+            <div th:replace="fragments/nav :: pageNavigation (page = ${events}, currentUrl= @{${#httpServletRequest.requestURI}})"></div>
             </div>
         </div>
     </div>
