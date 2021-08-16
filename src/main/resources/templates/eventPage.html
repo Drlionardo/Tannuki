@@ -10,7 +10,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<div th:replace="fragments/bars :: navbar"></div>
+<div th:replace="fragments/nav :: navbar"></div>
 <div class="container-fluid bg-white">
     <div class="container col-xxl-8 px-4 py-5">
         <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
@@ -33,7 +33,6 @@
         </div>
     </div>
 </div>
-
 <div class="container mt-5" style="max-width: 1080px">
     <div class="card mb-3 flex-fill" th:each="post : ${postList}">
         <div class="card-body">
@@ -48,7 +47,7 @@
             <div class="card">
                 <div class="row g-0" th:each="comment : ${post.comments}">
                     <div class="col-md-1">
-                        <img src="/img/main-logo.png" class="img-fluid rounded-start" alt="...">
+                        <img src="/img/main-logo" class="img-fluid rounded-start" alt="...">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">

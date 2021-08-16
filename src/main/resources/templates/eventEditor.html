@@ -10,48 +10,48 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<div th:replace="fragments/bars :: navbar"></div>
+<div th:replace="fragments/nav :: navbar"></div>
 <div class="row mt-5">
     <div class="col-md-2 themed-grid-col"></div>
     <div class="col-md-5 themed-grid-col">
         <div class="alert alert-success" role="alert" th:text="${successMessage}" th:if="${successMessage}"></div>
         <div class="alert alert-danger" role="alert" th:text="${errorMessage}" th:if="${errorMessage}"></div>
-            <div><h2>Event editor</h2></div>
-            <form method="post" th:action="@{/editor/event/edit (id = ${selectedEvent.id})}">
-                <div class="form-group row">
-                    <label for="eventTitle" class="col-sm-2 col-form-label">Title</label>
-                    <div class="col-sm-7">
-                        <input type="text" name="eventTitle" class="form-control" id="eventTitle" th:value="${selectedEvent.title}">
-                    </div>
+        <div><h2>Event editor</h2></div>
+        <form method="post" th:action="@{/editor/event/edit (id = ${selectedEvent.id})}">
+            <div class="form-group row">
+                <label for="eventTitle" class="col-sm-2 col-form-label">Title</label>
+                <div class="col-sm-7">
+                    <input type="text" name="eventTitle" class="form-control" id="eventTitle" th:value="${selectedEvent.title}">
                 </div>
-                <div class="form-group">
-                    <label for="eventDescription" class="col-sm-2 col-form-label">Description</label>
-                    <div class="col-sm-9">
-                        <textarea name="eventDescription" class="form-control" th:text="${selectedEvent.description}" id=eventDescription rows="3"></textarea>
-                    </div>
+            </div>
+            <div class="form-group">
+                <label for="eventDescription" class="col-sm-2 col-form-label">Description</label>
+                <div class="col-sm-9">
+                    <textarea name="eventDescription" class="form-control" th:text="${selectedEvent.description}" id=eventDescription rows="3"></textarea>
                 </div>
-                <button class="btn btn-primary mt-2" type="submit" th:text="'Save'"></button>
-            </form>
-            <hr>
-            Admins list:
-            <ul>
-                <li th:each="admin : ${selectedEvent.admins}">
-                    <form method="post" th:action="@{/editor/event/deleteAdmin (id = ${selectedEvent.id})}">
-                        <label for="'admin' + ${admin.id}" th:text="${admin.username} +' (' + ${admin.email} +')'"></label>
-                        <button type="submit" class="btn btn-danger" id="'admin' + ${admin.id}">Delete</button>
-                        <input type="hidden" name="adminId" th:value="${admin.id}">
-                    </form>
-                </li>
-            </ul>
-            <form method="post" th:action="@{/editor/event/addAdmin (id = ${selectedEvent.id})}">
-                <div class="form-group row">
-                    <label for="adminEmail" class="col-sm-2 col-form-label">Email</label>
-                    <div class="col-sm-6">
-                        <input type="email" id="adminEmail" name="adminEmail" class="form-control" placeholder="adminEmail@example.com">
-                    </div>
+            </div>
+            <button class="btn btn-primary mt-2" type="submit" th:text="'Save'"></button>
+        </form>
+        <hr>
+        Admins list:
+        <ul>
+            <li th:each="admin : ${selectedEvent.admins}">
+                <form method="post" th:action="@{/editor/event/deleteAdmin (id = ${selectedEvent.id})}">
+                    <label for="'admin' + ${admin.id}" th:text="${admin.username} +' (' + ${admin.email} +')'"></label>
+                    <button type="submit" class="btn btn-danger" id="'admin' + ${admin.id}">Delete</button>
+                    <input type="hidden" name="adminId" th:value="${admin.id}">
+                </form>
+            </li>
+        </ul>
+        <form method="post" th:action="@{/editor/event/addAdmin (id = ${selectedEvent.id})}">
+            <div class="form-group row">
+                <label for="adminEmail" class="col-sm-2 col-form-label">Email</label>
+                <div class="col-sm-6">
+                    <input type="email" id="adminEmail" name="adminEmail" class="form-control" placeholder="adminEmail@example.com">
                 </div>
-                <button class="btn btn-primary mt-2" type="submit">Add admin</button>
-            </form>
+            </div>
+            <button class="btn btn-primary mt-2" type="submit">Add admin</button>
+        </form>
         <hr>
         <p class="mt-2">
             <button class="btn btn-primary" type="button" data-bs-toggle="collapse" th:data-bs-target="'#addPost'">Add post</button>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="form-group">
                     <label for="postText">Description</label>
-                    <textarea name="text" class="form-control" id="postTxt" rows="3"></textarea>
+                    <textarea name="text" class="form-control" id="postText" rows="3"></textarea>
                 </div>
                 <div class="custom-file">
                     <label class="custom-file-label" for="customFile">Choose post image</label>
@@ -74,43 +74,7 @@
                 <input type="hidden" name="_csrf" value=${_csrf.token}>
                 <button type="submit" class="btn btn-primary">Add post</button>
             </form>
-            <hr>
         </div>
-    </div>
-    <div class="col-md-1 themed-grid-col"></div>
-    <div class="col-md-3 themed-grid-col">
-        <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white" >
-            <a href="/" class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
-                <span class="fs-5 fw-semibold">Editable events</span>
-            </a>
-            <div class="list-group list-group-flush border-bottom scrollarea">
-                <a th:if="${selectedEvent}" href="#" class="list-group-item list-group-item-action active py-3 lh-tight" aria-current="true">
-                    <div class="d-flex w-100 align-items-center justify-content-between">
-                        <strong class="mb-1" th:text="${selectedEvent.title}">Event name</strong>
-                        <small th:text="${selectedEvent.id}">12</small>
-                    </div>
-                    <p class="col-10 mb-1 small" th:text="${selectedEvent.description}">Event description</p>
-                </a>
-                <a th:each="event : ${creatorEvents}" th:href="@{/editor/edit (id = ${event.id})}" class="list-group-item list-group-item-action py-3 lh-tight">
-                    <div class="d-flex w-100 align-items-center justify-content-between">
-                        <strong class="mb-1" th:text="${event.title}">Event name</strong>
-                        <small th:text="${event.id}">12</small>
-                    </div>
-                    <p class="col-10 mb-1 small" th:text="${event.description}">Event description</p>
-                </a>
-                <a href="/editor" class="list-group-item list-group-item-action">
-                    <div class="d-flex w-100 align-items-center justify-content-center">
-                        <strong class="mb-1">Create new event</strong>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row mt-5">
-    <div class="col-md-2 themed-grid-col"></div>
-    <div class="col-md-5 themed-grid-col">
         <div class="container mt-2" style="max-width: 1080px">
             <h3>Event posts</h3>
             <div class="card mb-3 flex-fill" th:each="post : ${selectedEvent.posts}">
@@ -141,8 +105,11 @@
             </div>
         </div>
     </div>
+    <div class="col-md-1 themed-grid-col"></div>
+    <div class="col-md-3 themed-grid-col">
+        <div th:replace="fragments/nav :: eventSidebar(currentUrl= @{${#httpServletRequest.requestURI} (id = ${selectedEvent.id})})"></div>
+    </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

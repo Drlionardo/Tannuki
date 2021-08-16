@@ -5,6 +5,9 @@ import com.drlionardo.registryhub.domain.EventPost;
 import com.drlionardo.registryhub.domain.User;
 import com.drlionardo.registryhub.service.EventPostService;
 import com.drlionardo.registryhub.service.EventService;
+import com.drlionardo.registryhub.service.UserService;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,10 +19,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class EventsController {
     private final EventService eventService;
     private final EventPostService postService;
+    private final UserService userService;
 
-    public EventsController(EventService eventService, EventPostService postService) {
+    public EventsController(EventService eventService, EventPostService postService, UserService userService) {
         this.eventService = eventService;
         this.postService = postService;
+        this.userService = userService;
     }
 
     @GetMapping
@@ -28,9 +33,16 @@ public class EventsController {
     }
 
     @GetMapping("events")
-    public String allEvents(Model model) {
-        model.addAttribute("events", eventService.findAll());
+    public String allEvents(@PageableDefault(size = 10) Pageable pageable, Model model) {
+        model.addAttribute("events", eventService.findAll(pageable));
         return "events";
+    }
+
+    @GetMapping("myEvents")
+    public String userEvents(@AuthenticationPrincipal User user, @PageableDefault(size = 10) Pageable pageable,
+                             Model model) {
+        model.addAttribute("events", eventService.getRegisteredEventsByUserId(user.getId(), pageable));
+        return "myevent";
     }
 
     @GetMapping("event")

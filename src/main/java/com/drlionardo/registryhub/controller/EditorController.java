@@ -4,13 +4,15 @@ import com.drlionardo.registryhub.domain.Event;
 import com.drlionardo.registryhub.domain.User;
 import com.drlionardo.registryhub.service.EventPostService;
 import com.drlionardo.registryhub.service.EventService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 @Controller
 public class EditorController {
     private final EventService eventService;
@@ -22,8 +24,9 @@ public class EditorController {
     }
 
     @GetMapping("/editor")
-    public String getCreatorPage(@AuthenticationPrincipal User user, Model model) {
-        model.addAttribute("creatorEvents", eventService.getEventsByCreator(user));
+    public String getCreatorPage(@AuthenticationPrincipal User user, @PageableDefault(size = 5) Pageable pageable,
+                                 Model model) {
+        model.addAttribute("creatorEvents", eventService.getEventsByCreator(user, pageable));
         return "editorPage";
     }
     @PostMapping("editor/addEvent")
@@ -38,10 +41,9 @@ public class EditorController {
 
     @GetMapping("/editor/edit")
     public String eventPageEditor(@RequestParam Long id, @AuthenticationPrincipal User user,
-                                  Model model) {
+                                  @PageableDefault(size = 5) Pageable pageable, Model model) {
         Event selectedEvent = eventService.findById(id);
-        List<Event> creatorEvents = eventService.getEventsByCreator(user);
-        creatorEvents.remove(selectedEvent);
+        Page<Event> creatorEvents = eventService.getEventsByCreator(user, pageable);
         model.addAttribute("creatorEvents", creatorEvents);
         model.addAttribute("selectedEvent", selectedEvent);
         Event event = eventService.findById(id);
