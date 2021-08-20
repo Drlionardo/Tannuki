@@ -23,10 +23,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers("/main","/","/logout", "/event/**", "/registration", "/static/**", "/img/**","/profile/repeatEmailActivation/**", "/activate/**").permitAll()
-                .anyRequest().authenticated()
+        http.requiresChannel()
+                //Forces to use HTTPS
+                .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
+                    .requiresSecure().
+                and()
+                    .authorizeRequests()
+                    .antMatchers("/events","/","/logout", "/event/**", "/registration", "/static/**", "/img/**","/profile/repeatEmailActivation/**", "/activate/**").permitAll()
+                    .anyRequest().authenticated()
                 .and().
                     rememberMe()
                 .and()
