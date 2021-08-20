@@ -16,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class EventService {
@@ -32,8 +31,13 @@ public class EventService {
         this.requestRepo = requestRepo;
     }
 
-    public Page<Event> findAll(Pageable pageable) {
-        return eventRepo.findAll(pageable);
+    public Page<Event> findAllWithFilter(Pageable pageable, String filter) {
+        return switch (filter) {
+            case "all" -> eventRepo.findAll(pageable);
+            case "active" -> eventRepo.findAllByArchived(pageable, false);
+            case "archived" -> eventRepo.findAllByArchived(pageable, true);
+            default -> eventRepo.findAll(Pageable.unpaged());
+        };
     }
     public Event findById(Long id) {
         return eventRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));

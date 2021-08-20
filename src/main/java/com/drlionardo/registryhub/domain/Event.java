@@ -17,6 +17,8 @@ public class Event {
     private LocalDateTime creationDate;
     private LocalDateTime registrationStartDate;
     private LocalDateTime registrationEndDate;
+    private boolean archived;
+
     @ManyToMany
     private List<User> admins;
     @OneToMany(mappedBy = "event")
@@ -65,6 +67,14 @@ public class Event {
 
     public void setTitle(String name) {
         this.title = name;
+    }
+
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
     }
 
     public String getDescription() {
