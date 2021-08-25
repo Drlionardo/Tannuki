@@ -34,7 +34,7 @@ public class EventsController {
     }
 
     @GetMapping("events")
-    public String allEvents(@PageableDefault(sort = "creationDate", direction = Sort.Direction.DESC) Pageable pageable,
+    public String allEvents(@PageableDefault(sort = "lastUpdateDate", direction = Sort.Direction.DESC) Pageable pageable,
                             @RequestParam(defaultValue = "all") String filter, Model model) {
         model.addAttribute("events", eventService.findAllWithFilter(pageable, filter));
         return "events";

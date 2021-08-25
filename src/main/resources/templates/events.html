@@ -23,7 +23,7 @@
                     <a class="nav-link" th:href="@{${urlBuilder.replaceQueryParam('filter', 'active').build().toUriString()}}" th:classappend="${filter == 'active'}? 'active':''" >Активные</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{${urlBuilder.replaceQueryParam('filter', 'archived').build().toUriString()}}" th:classappend="${filter ==  archived'}? 'active':''" >Прошедшие</a>
+                    <a class="nav-link" th:href="@{${urlBuilder.replaceQueryParam('filter', 'archived').build().toUriString()}}" th:classappend="${filter == 'archived'}? 'active':''" >Прошедшие</a>
                 </li>
             </ul>
             <div th:replace="fragments/eventLists :: eventCards (content = ${events})"></div>
