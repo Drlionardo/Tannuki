@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import static com.drlionardo.registryhub.util.Converter.getDurationFromNow;
+
 @Entity
 public class Event {
     @Id
@@ -17,6 +19,9 @@ public class Event {
     private LocalDateTime creationDate;
     private LocalDateTime registrationStartDate;
     private LocalDateTime registrationEndDate;
+    private LocalDateTime lastUpdateDate;
+    private boolean archived;
+
     @ManyToMany
     private List<User> admins;
     @OneToMany(mappedBy = "event")
@@ -67,6 +72,14 @@ public class Event {
         this.title = name;
     }
 
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -97,6 +110,18 @@ public class Event {
 
     public void setPosts(List<EventPost> posts) {
         this.posts = posts;
+    }
+
+    public LocalDateTime getLastUpdateDate() {
+        return lastUpdateDate;
+    }
+
+    public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
+        this.lastUpdateDate = lastUpdateDate;
+    }
+
+    public String getLastUpdateDuration() {
+        return getDurationFromNow(lastUpdateDate);
     }
 
     @Override

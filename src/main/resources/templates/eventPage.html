@@ -38,7 +38,7 @@
         <div class="card-body">
             <h5 class="card-title" th:text="${post.title}"></h5>
             <p class="card-text" th:text="${post.text}"></p>
-            <p class="card-text"><small class="text-muted" th:text="${post.getPublicationDate()}" >12.12.13</small></p>
+            <p class="card-text"><small class="text-muted" th:text="'Published ' + ${post.getLastUpdateDuration}"></small></p>
         </div>
         <p>
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" th:data-bs-target="'#comments_' + ${post.id}" th:text="${post.commentsCounter} + ' comments'">Open/Close</button>
@@ -47,13 +47,13 @@
             <div class="card">
                 <div class="row g-0" th:each="comment : ${post.comments}">
                     <div class="col-md-1">
-                        <img src="/img/main-logo" class="img-fluid rounded-start" alt="...">
+                        <img src="/img/main-logo.webp" class="img-fluid rounded-start" alt="...">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
                             <h5 class="card-title" th:text="${comment.author.username}"></h5>
                             <p class="card-text" th:text="${comment.text}"></p>
-                            <p class="card-text"><small class="text-muted" th:text="'Published by ' + ${comment.author.username} + ' at ' + ${comment.publicationDate}"></small></p>
+                            <p class="card-text"><small class="text-muted" th:text="${comment.getLastUpdateDuration}"></small></p>
                         </div>
                     </div>
                 </div>

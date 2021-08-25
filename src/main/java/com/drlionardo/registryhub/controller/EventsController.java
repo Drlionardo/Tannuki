@@ -7,6 +7,7 @@ import com.drlionardo.registryhub.service.EventPostService;
 import com.drlionardo.registryhub.service.EventService;
 import com.drlionardo.registryhub.service.UserService;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -33,14 +34,15 @@ public class EventsController {
     }
 
     @GetMapping("events")
-    public String allEvents(@PageableDefault(size = 10) Pageable pageable, Model model) {
-        model.addAttribute("events", eventService.findAll(pageable));
+    public String allEvents(@PageableDefault(sort = "lastUpdateDate", direction = Sort.Direction.DESC) Pageable pageable,
+                            @RequestParam(defaultValue = "all") String filter, Model model) {
+        model.addAttribute("events", eventService.findAllWithFilter(pageable, filter));
         return "events";
     }
 
     @GetMapping("myEvents")
-    public String userEvents(@AuthenticationPrincipal User user, @PageableDefault(size = 10) Pageable pageable,
-                             Model model) {
+    public String userEvents(@PageableDefault(sort = "creationDate", direction = Sort.Direction.DESC) Pageable pageable,
+                             @AuthenticationPrincipal User user, Model model) {
         model.addAttribute("events", eventService.getRegisteredEventsByUserId(user.getId(), pageable));
         return "myevent";
     }

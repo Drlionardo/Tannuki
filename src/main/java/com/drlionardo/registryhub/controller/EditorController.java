@@ -6,6 +6,7 @@ import com.drlionardo.registryhub.service.EventPostService;
 import com.drlionardo.registryhub.service.EventService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -24,7 +25,8 @@ public class EditorController {
     }
 
     @GetMapping("/editor")
-    public String getCreatorPage(@AuthenticationPrincipal User user, @PageableDefault(size = 5) Pageable pageable,
+    public String getCreatorPage(@AuthenticationPrincipal User user,
+                                 @PageableDefault(size = 5, sort = "creationDate", direction = Sort.Direction.DESC) Pageable pageable,
                                  Model model) {
         model.addAttribute("creatorEvents", eventService.getEventsByCreator(user, pageable));
         return "editorPage";
@@ -40,8 +42,8 @@ public class EditorController {
     }
 
     @GetMapping("/editor/edit")
-    public String eventPageEditor(@RequestParam Long id, @AuthenticationPrincipal User user,
-                                  @PageableDefault(size = 5) Pageable pageable, Model model) {
+    public String eventPageEditor(@PageableDefault(size = 5, sort = "creationDate", direction = Sort.Direction.DESC) Pageable pageable,
+                                  @RequestParam Long id, @AuthenticationPrincipal User user, Model model) {
         Event selectedEvent = eventService.findById(id);
         Page<Event> creatorEvents = eventService.getEventsByCreator(user, pageable);
         model.addAttribute("creatorEvents", creatorEvents);

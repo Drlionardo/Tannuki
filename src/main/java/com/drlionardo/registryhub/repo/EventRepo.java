@@ -11,6 +11,7 @@ import java.util.Optional;
 
 public interface EventRepo extends PagingAndSortingRepository<Event, Long> {
     Optional<Event> findById(Long id);
+    Page<Event> findAllByArchived(Pageable pageable, boolean archived);
     Page<Event> findAllByAdminsContains(User user, Pageable pageable);
     Page<Event> findByRegistrationRequestList_Owner(User user, Pageable pageable);
 }

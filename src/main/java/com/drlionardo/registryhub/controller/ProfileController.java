@@ -6,6 +6,7 @@ import com.drlionardo.registryhub.exceptions.WrongPasswordException;
 import com.drlionardo.registryhub.service.EventService;
 import com.drlionardo.registryhub.service.UserService;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -30,7 +31,7 @@ public class ProfileController {
 
     @GetMapping("/profile")
     public String userProfile(@RequestParam Long id, @AuthenticationPrincipal User user, Model model,
-                              @PageableDefault Pageable pageable) {
+                              @PageableDefault(sort = "creationDate", direction = Sort.Direction.DESC) Pageable pageable) {
         model.addAttribute("profileId", id);
         model.addAttribute("allRoles", Role.values());
         model.addAttribute("user", userService.findUserById(id));

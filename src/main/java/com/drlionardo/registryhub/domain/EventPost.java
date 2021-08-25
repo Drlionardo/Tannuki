@@ -4,6 +4,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.drlionardo.registryhub.util.Converter.getDurationFromNow;
+
 @Entity
 public class EventPost {
     @Id
@@ -89,5 +91,9 @@ public class EventPost {
 
     public int commentsCounter() {
         return comments.size();
+    }
+
+    public String getLastUpdateDuration() {
+        return getDurationFromNow(publicationDate);
     }
 }

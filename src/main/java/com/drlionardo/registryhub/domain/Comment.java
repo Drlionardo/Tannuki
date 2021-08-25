@@ -6,6 +6,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
+import static com.drlionardo.registryhub.util.Converter.getDurationFromNow;
+
 @Entity
 public class Comment {
     @Id
@@ -59,5 +61,9 @@ public class Comment {
 
     public void setPost(EventPost post) {
         this.post = post;
+    }
+
+    public String getLastUpdateDuration() {
+        return getDurationFromNow(publicationDate);
     }
 }
