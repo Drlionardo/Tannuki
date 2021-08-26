@@ -48,6 +48,7 @@ public class EventService {
         event.setTitle(name);
         event.setDescription(description);
         event.setCreationDate(LocalDateTime.now());
+        updateEventUpdateDate(event);
         var adminList = new ArrayList<User>();
         adminList.add(admin);
         event.setAdmins(adminList);
@@ -98,6 +99,7 @@ public class EventService {
         Event eventFromDb = findById(eventId);
         eventFromDb.setTitle(eventName);
         eventFromDb.setDescription(eventDescription);
+        updateEventUpdateDate(eventFromDb);
         eventRepo.save(eventFromDb);
     }
 
@@ -112,5 +114,8 @@ public class EventService {
     public Page<Event> getRegisteredEventsByUserId(Long userId, Pageable pageable) {
         User user = userService.findUserById(userId);
         return  eventRepo.findByRegistrationRequestList_Owner(user, pageable);
+    }
+    private void updateEventUpdateDate(Event event) {
+        event.setLastUpdateDate(LocalDateTime.now());
     }
 }
