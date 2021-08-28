@@ -1,9 +1,6 @@
 package com.drlionardo.registryhub.service;
 
-import com.drlionardo.registryhub.domain.Event;
-import com.drlionardo.registryhub.domain.EventPost;
-import com.drlionardo.registryhub.domain.RegistrationRequest;
-import com.drlionardo.registryhub.domain.User;
+import com.drlionardo.registryhub.domain.*;
 import com.drlionardo.registryhub.repo.EventPostRepo;
 import com.drlionardo.registryhub.repo.EventRepo;
 import com.drlionardo.registryhub.repo.RegistrationRequestRepo;
@@ -11,9 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -23,12 +22,14 @@ public class EventService {
     private final EventPostRepo postRepo;
     private final UserService userService;
     private final RegistrationRequestRepo requestRepo;
+    private final ImageStorageService imageService;
 
-    public EventService(EventRepo eventRepo, EventPostRepo postRepo, UserService userService, RegistrationRequestRepo requestRepo) {
+    public EventService(EventRepo eventRepo, EventPostRepo postRepo, UserService userService, RegistrationRequestRepo requestRepo, ImageStorageService imageService) {
         this.eventRepo = eventRepo;
         this.postRepo = postRepo;
         this.userService = userService;
         this.requestRepo = requestRepo;
+        this.imageService = imageService;
     }
 
     public Page<Event> findAllWithFilter(Pageable pageable, String filter) {
@@ -43,14 +44,27 @@ public class EventService {
         return eventRepo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public void addEvent(User admin, String name, String description) {
+    public void addEvent(User admin, String name, String description, LocalDateTime endDate, MultipartFile logo) {
         Event event = new Event();
         event.setTitle(name);
         event.setDescription(description);
         event.setCreationDate(LocalDateTime.now());
+        event.setRegistrationEndDate(endDate);
+        event.setLastUpdateDate(LocalDateTime.now());
+
         var adminList = new ArrayList<User>();
         adminList.add(admin);
         event.setAdmins(adminList);
+
+        if(logo != null) {
+            try {
+                Image eventImage= imageService.saveFile(logo);
+                event.setLogo(eventImage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         eventRepo.save(event);
     }
 

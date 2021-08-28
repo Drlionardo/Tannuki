@@ -1,6 +1,7 @@
 package com.drlionardo.registryhub.controller;
 
 import com.drlionardo.registryhub.domain.Event;
+import com.drlionardo.registryhub.domain.Image;
 import com.drlionardo.registryhub.domain.User;
 import com.drlionardo.registryhub.service.EventPostService;
 import com.drlionardo.registryhub.service.EventService;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 @Controller
 public class EditorController {
@@ -39,18 +42,12 @@ public class EditorController {
     }
     @PostMapping("editor/addEvent")
     public String addEvent(@AuthenticationPrincipal User admin,
-                           @RequestParam("eventImage") MultipartFile multipartFile,
+                           @RequestParam(value = "eventLogo", required = false) MultipartFile multipartFile,
                            @RequestParam String title,
                            @RequestParam String description,
+                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
                            RedirectAttributes redirectAttributes) {
-        eventService.addEvent(admin, title, description);
-        if(multipartFile != null) {
-            try {
-                imageService.saveFile(multipartFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        eventService.addEvent(admin, title, description, endDate, multipartFile);
 
         redirectAttributes.addFlashAttribute("successMessage", "New event created");
         return "redirect:/editor";

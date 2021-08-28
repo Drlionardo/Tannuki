@@ -12,15 +12,15 @@
 <body>
 <div th:replace="fragments/nav :: navbar"></div>
 <div class="container-fluid bg-white">
-    <div class="container col-xxl-8 px-4 py-5">
+    <div class="container col-xxl-8 px-4">
         <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
             <div class="col-10 col-sm-8 col-lg-6">
-                <img src="/img/defaultEventImage.webp" class="d-block mx-lg-auto img-fluid" alt="Event image" width="700" height="500" loading="lazy">
+                <img  th:src="${event.logo}?${event.logo.url} :'https://tannuki-space.fra1.digitaloceanspaces.com/images/default/event-logo.svg'" class="d-block mx-lg-auto img-fluid" alt="Event image" loading="lazy">
             </div>
             <div class="col-lg-6">
                 <h1 class="display-5 fw-bold lh-1 mb-3" th:text="${event.title}"></h1>
                 <p class="lead" th:text="${event.description}"></p>
-                <p class="lead" th:if="${event.registrationEndDate}" th:text="Регистрация заканчивается ${event.registrationEndDate}"></p>
+                <p class="lead" th:if="${event.registrationEndDate}" th:text="'Регистрация заканчивается' + ${event.registrationEndDate}"></p>
                 <div sec:authorize="isAuthenticated()" class="d-grid gap-2 d-md-flex justify-content-md-start">
                     <form method="post" th:action="@{event/cancel (id=${event.id})}" th:if="${isRegistered}">
                         <button type="submit" class="btn btn-outline-secondary btn-lg px-4">Cancel</button>
