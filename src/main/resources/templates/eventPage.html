@@ -47,7 +47,7 @@
             <div class="card">
                 <div class="row g-0" th:each="comment : ${post.comments}">
                     <div class="col-md-1">
-                        <img src="/img/main-logo.webp" class="img-fluid rounded-start" alt="...">
+                        <img th:src="${comment.author.avatar}?${comment.author.avatar.url} :'https://tannuki-space.fra1.digitaloceanspaces.com/images/default/user-avatar.svg'" class="img-fluid rounded-start" alt="user avatar">
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">

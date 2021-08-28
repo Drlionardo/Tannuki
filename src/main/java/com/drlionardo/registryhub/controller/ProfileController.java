@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Controller
@@ -91,6 +93,26 @@ public class ProfileController {
         userService.updateRoles(id, form);
         redirectAttributes.addAttribute("id", id);
         redirectAttributes.addFlashAttribute("successMessage","Roles have been successfully updated");
+        return "redirect:/profile";
+    }
+
+    @PostMapping("/profile/setAvatar")
+    public String setAvatar(@RequestParam("id") Long userId, @RequestParam ("avatar") MultipartFile multipartFile,
+                            RedirectAttributes redirectAttributes) {
+        try {
+            userService.setAvatar(userId, multipartFile);
+            redirectAttributes.addFlashAttribute("successMessage", "Your avatar has been changed!");
+        } catch (IOException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error! Unable to  upload avatar!");
+        }
+        redirectAttributes.addAttribute("id", userId);
+        return "redirect:/profile";
+    }
+    @PostMapping("/profile/deleteAvatar")
+    public String deleteAvatar(@RequestParam("id") Long userId,
+                            RedirectAttributes redirectAttributes) {
+        userService.deleteAvatar(userId);
+        redirectAttributes.addAttribute("id", userId);
         return "redirect:/profile";
     }
 }

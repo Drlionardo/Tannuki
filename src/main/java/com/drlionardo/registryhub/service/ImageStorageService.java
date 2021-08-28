@@ -33,7 +33,7 @@ public class ImageStorageService {
         this.s3Client= amazonS3;
     }
 
-    public void saveFile(MultipartFile multipartFile) throws IOException {
+    public Image saveFile(MultipartFile multipartFile) throws IOException {
         String filename = UUID.randomUUID().toString();
         String extension = FilenameUtils.getExtension(multipartFile.getOriginalFilename());
         String key = FOLDER + '/' + filename + '.' + extension;
@@ -46,6 +46,7 @@ public class ImageStorageService {
         String url = String.format("https://%s.%s/%s", doSpaceBucket, doSpaceEndpoint, key);
         image.setUrl(url);
         imageRepo.save(image);
+        return image;
     }
 
     public void deleteFile(UUID fileId) {
@@ -56,7 +57,6 @@ public class ImageStorageService {
             s3Client.deleteObject(new DeleteObjectRequest(doSpaceBucket, key));
             imageRepo.delete(image);
         }
-        //TODO: Throw 404
     }
 
     private void saveImageToServer(MultipartFile multipartFile, String key) throws IOException {

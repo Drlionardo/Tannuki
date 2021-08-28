@@ -44,10 +44,12 @@ public class EditorController {
                            @RequestParam String description,
                            RedirectAttributes redirectAttributes) {
         eventService.addEvent(admin, title, description);
-        try {
-            imageService.saveFile(multipartFile);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(multipartFile != null) {
+            try {
+                imageService.saveFile(multipartFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         redirectAttributes.addFlashAttribute("successMessage", "New event created");
