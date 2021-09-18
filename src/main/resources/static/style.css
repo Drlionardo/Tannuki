@@ -52,3 +52,10 @@ body {
   background-color: #6e5494;
   border-color: #6e5494;
 }
+.bd-tabs {
+  position: relative;
+  padding: 1rem;
+  margin: 1rem -.75rem 0;
+  border: solid #dee2e6;
+  border-width: 1px 0 0;
+}
