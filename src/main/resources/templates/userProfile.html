@@ -11,77 +11,122 @@
 </head>
 <body>
 <div th:replace="fragments/nav :: navbar"></div>
-
-<div class="row mt-5">
-    <div class="col-md-3 themed-grid-col"></div>
-    <div class="col-md-6 themed-grid-col">
-        <div class="alert alert-success" role="alert" th:text="${successMessage}" th:if="${successMessage}"></div>
-        <div class="alert alert-danger" role="alert" th:text="${errorMessage}" th:if="${errorMessage}"></div>
-        <h1 th:text="'Profile: ' +${user.username}"></h1>
-        <div>
-            <small class="text-muted" th:each="role : ${user.roles}" th:text="${role} +','">Roles</small>
+<div class="container bg-white border rounded border-white shadow-sm main mt-3">
+    <div class="alert alert-success" role="alert" th:text="${successMessage}" th:if="${successMessage}"></div>
+    <div class="alert alert-danger" role="alert" th:text="${errorMessage}" th:if="${errorMessage}"></div>
+    <div class="row">
+        <div class="col">
+            <h1 th:text="'Profile: ' +${user.username}"></h1>
+            <div>
+                <small class="text-muted" th:each="role : ${user.roles}" th:text="${role} +','">Roles</small>
+            </div>
+            <div th:if="${user.id} == ${#authentication.principal.id} or ${#authentication.principal.isAdmin}">
+                <div th:if="${user.emailValidated}" th:text="'Email: ' + ${user.email} + ' (validated)'"></div>
+                <div th:unless="${user.emailValidated}">
+                    <div th:text="'Email: ' + ${user.email} + '(awaits validation)'"></div>
+                    <form method="post" th:action="@{/profile/repeatEmailActivation (id = ${user.id})}">
+                        <button class="btn btn-secondary" type="submit" th:text="'Send email with code again'"></button>
+                    </form>
+                </div>
+                <p class="mt-2">
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" th:data-bs-target="'#changeEmailForm'">Change email</button>
+                    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" th:data-bs-target="'#changePasswordForm'">Change password</button>
+                </p>
+                <div class="collapse mt-2" th:id="'changeEmailForm'">
+                    <form th:action="@{/profile/changeEmail (id = ${user.id})}" method="post">
+                        <div class="form-floating">
+                            <input type="email" id="email" name="newEmail" class="form-control" autofocus="autofocus" placeholder="name@example.com">
+                            <label for="email">New email address</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="password" name="currentPassword" class="form-control" id="password" placeholder="Password">
+                            <label for="password">Current password</label>
+                        </div>
+                        <button class="btn btn-primary mt-1" type="submit">Change email</button>
+                    </form>
+                </div>
+                <div class="collapse mt-2" th:id="'changePasswordForm'">
+                    <form th:action="@{/profile/changePassword (id = ${user.id})}" method="post">
+                        <div class="form-floating">
+                            <input type="password" name="currentPassword" class="form-control" id="currentPassword" placeholder="Password">
+                            <label for="currentPassword">Current password</label>
+                        </div>
+                        <div class="form-floating">
+                            <input type="password" name="newPassword" class="form-control" id="newPassword" placeholder="Password">
+                            <label for="newPassword">New password</label>
+                        </div>
+                        <button class="btn btn-primary mt-1" type="submit">Update password</button>
+                    </form>
+                </div>
+                <div sec:authorize="hasAuthority('ADMIN')">
+                    <h3>Admin section:</h3>
+                    <form th:action="@{/profile/updateRoles (id = ${user.id})}" method="post">
+                        <div class="form-floating">
+                            <div th:each="role : ${allRoles}">
+                                <input type="checkbox" th:name="${role}" th:checked="${user.getRoles.contains(role)}">
+                                <label th:text="${role}"></label>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary mt-1" type="submit">Update Roles</button>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div th:if="${user.id} == ${#authentication.principal.id} or ${#authentication.principal.isAdmin}">
-            <div th:if="${user.emailValidated}" th:text="'Email: ' + ${user.email} + ' (validated)'"></div>
-            <div th:unless="${user.emailValidated}">
-                <div th:text="'Email: ' + ${user.email} + '(awaits validation)'"></div>
-                <form method="post" th:action="@{/profile/repeatEmailActivation (id = ${user.id})}">
-                    <button class="btn btn-secondary" type="submit" th:text="'Send email with code again'"></button>
-                </form>
-            </div>
-            <p class="mt-2">
-                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" th:data-bs-target="'#changeEmailForm'">Change email</button>
-                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" th:data-bs-target="'#changePasswordForm'">Change password</button>
-            </p>
-            <div class="collapse" th:id="'changeEmailForm'">
-                <form th:action="@{/profile/changeEmail (id = ${user.id})}" method="post">
-                    <div class="form-floating col-sm-6">
-                        <input type="email" id="email" name="newEmail" class="form-control" autofocus="autofocus" placeholder="name@example.com">
-                        <label for="email">New email address</label>
-                    </div>
-                    <div class="form-floating col-sm-6">
-                        <input type="password" name="currentPassword" class="form-control" id="password" placeholder="Password">
-                        <label for="password">Current password</label>
-                    </div>
-                    <button class="btn btn-primary mt-1" type="submit">Change email</button>
-                </form>
-            </div>
-            <div class="collapse" th:id="'changePasswordForm'">
-                <form th:action="@{/profile/changePassword (id = ${user.id})}" method="post">
-                    <div class="form-floating col-sm-6">
-                        <input type="password" name="currentPassword" class="form-control" id="currentPassword" placeholder="Password">
-                        <label for="currentPassword">Current password</label>
-                    </div>
-                    <div class="form-floating col-sm-6">
-                        <input type="password" name="newPassword" class="form-control" id="newPassword" placeholder="Password">
-                        <label for="newPassword">New password</label>
-                    </div>
-                    <button class="btn btn-primary mt-1" type="submit">Update password</button>
-                </form>
-            </div>
-            <div sec:authorize="hasAuthority('ADMIN')">
-                <h3>Admin section:</h3>
-                <form th:action="@{/profile/updateRoles (id = ${user.id})}" method="post">
-                    <div class="form-floating">
-                        <div th:each="role : ${allRoles}">
-                            <input type="checkbox" th:name="${role}" th:checked="${user.getRoles.contains(role)}">
-                            <label th:text="${role}"></label>
+        <div class="col">
+            <figure class="text-center">
+                <img th:src="${user.avatar}?${user.avatar.url} :'https://tannuki-space.fra1.digitaloceanspaces.com/images/default/user-avatar.svg'" class="img-thumbnail rounded" loading="lazy" alt="User avatar">
+
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary mt-2" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Change avatar
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Change avatar</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <img id="uploadPreview" th:src="${user.avatar}?${user.avatar.url} :'https://tannuki-space.fra1.digitaloceanspaces.com/images/default/user-avatar.svg'" class="img-thumbnail rounded" loading="lazy" alt="User avatar" width="250px" height="250px">
+                                <form id="avatar_form" method="post" th:action="@{/profile/setAvatar (id = ${user.id})}" enctype="multipart/form-data">
+                                    <label for="uploadAvatar" class="form-label">Upload new avatar</label>
+                                    <input class="form-control form-control-sm" id="uploadAvatar" type="file" name="avatar" onchange="PreviewImage();"  />
+                                </form>
+                                <form id="delete_avatar_form" method="post" th:action="@{/profile/deleteAvatar (id = ${user.id})}"></form>
+                                <script type="text/javascript">
+                                    function PreviewImage() {
+                                        const oFReader = new FileReader();
+                                        oFReader.readAsDataURL(document.getElementById("uploadAvatar").files[0]);
+
+                                        oFReader.onload = function (oFREvent) {
+                                            document.getElementById("uploadPreview").src = oFREvent.target.result;
+                                        };
+                                    }
+                                </script>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" form="delete_avatar_form" class="btn btn-danger">Delete</button>
+                                <button type="submit" form="avatar_form" class="btn btn-primary">Save changes</button>
+                            </div>
                         </div>
                     </div>
-                    <button class="btn btn-primary mt-1" type="submit">Update Roles</button>
-                </form>
-            </div>
-            <div class="row row-cols-1 row-cols-md-1 g-4">
-                <a href="/" class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
-                    <span class="fs-5 fw-semibold">User's registered events</span>
-                </a>
-                <div th:replace="fragments/eventLists :: eventCards (content = ${events})"></div>
-                <div th:replace="fragments/nav :: pageNavigation (page = ${events}, currentUrl= @{${#httpServletRequest.requestURI} (id = ${user.id})})"></div>
-            </div>
+                </div>
+            </figure>
         </div>
     </div>
-    <div class="col-md-3 themed-grid-col"></div>
 </div>
+<div class="container main mt-3">
+    <div class="row row-cols-1 row-cols-md-1 g-4">
+        <a href="/" class="d-flex align-items-center flex-shrink-0 p-3 link-dark text-decoration-none border-bottom">
+            <h2 class="fw-semibold">User's registered events</h2>
+        </a>
+        <div th:replace="fragments/eventLists :: eventCards (content = ${events})"></div>
+        <div th:replace="fragments/nav :: pageNavigation (page = ${events}, currentUrl= @{${#httpServletRequest.requestURI} (id = ${user.id})})"></div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

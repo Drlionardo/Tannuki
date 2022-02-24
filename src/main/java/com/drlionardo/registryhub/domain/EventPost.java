@@ -21,6 +21,8 @@ public class EventPost {
     private LocalDateTime publicationDate;
     @OneToMany(mappedBy = "post")
     private List<Comment> comments;
+    @OneToOne
+    private Image logo;
 
     public EventPost() {
     }
@@ -95,5 +97,13 @@ public class EventPost {
 
     public String getLastUpdateDuration() {
         return getDurationFromNow(publicationDate);
+    }
+
+    public Image getLogo() {
+        return logo;
+    }
+
+    public void setLogo(Image logo) {
+        this.logo = logo;
     }
 }

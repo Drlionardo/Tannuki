@@ -25,6 +25,8 @@ public class User implements UserDetails {
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
+    @OneToOne
+    private Image avatar;
 
     public User() {
     }
@@ -123,6 +125,15 @@ public class User implements UserDetails {
     public boolean isCreator() {
         return roles.contains(Role.CREATOR);
     }
+
+    public Image getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Image avatar) {
+        this.avatar = avatar;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

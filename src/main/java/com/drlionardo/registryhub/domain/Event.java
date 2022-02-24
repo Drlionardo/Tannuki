@@ -21,6 +21,8 @@ public class Event {
     private LocalDateTime registrationEndDate;
     private LocalDateTime lastUpdateDate;
     private boolean archived;
+    @OneToOne
+    private Image logo;
 
     @ManyToMany
     private List<User> admins;
@@ -122,6 +124,14 @@ public class Event {
 
     public String getLastUpdateDuration() {
         return getDurationFromNow(lastUpdateDate);
+    }
+
+    public Image getLogo() {
+        return logo;
+    }
+
+    public void setLogo(Image logo) {
+        this.logo = logo;
     }
 
     @Override

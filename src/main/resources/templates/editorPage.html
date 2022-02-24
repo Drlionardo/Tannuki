@@ -13,29 +13,47 @@
 <div th:replace="fragments/nav :: navbar"></div>
 <div class="row mt-5">
     <div class="col-md-2 themed-grid-col"></div>
-    <div class="col-md-5 themed-grid-col">
+    <div class="col-md-6 themed-grid-col">
         <div class="alert alert-success" role="alert" th:text="${successMessage}" th:if="${successMessage}"></div>
         <div class="alert alert-danger" role="alert" th:text="${errorMessage}" th:if="${errorMessage}"></div>
-        <h3>Add event:</h3>
-        <form method="post" th:action="@{editor/addEvent}">
-            <div class="form-group row">
-                <label for="eventTitle" class="col-sm-2 col-form-label">Event title</label>
-                <div class="col-sm-10">
-                    <input type="text" name="title" class="form-control" id="eventTitle" placeholder="Event title">
-                </div>
-                <div class="form-group">
-                    <label for="eventDescription">Description</label>
-                    <textarea name="description" class="form-control" id="eventDescription" rows="3"></textarea>
-                </div>
-                <div class="custom-file mt-1">
-                    <label class="custom-file-label" for="eventImage">Choose event image: </label>
-                    <input type="file" class="custom-file-input" id="eventImage">
-                </div>
-                <button class="btn btn-primary mt-2" type="submit" th:text="'Create new event'"></button>
+        <div class="row flex-lg-row-reverse align-items-center py-5 bg-white">
+
+            <div class="col-10 col-sm-8 col-lg-6">
+                <img id="uploadPreview" th:src="'https://tannuki-space.fra1.digitaloceanspaces.com/images/default/event-logo.svg'" class="img-thumbnail rounded img-fluid" loading="lazy" alt="User avatar">
+                    <label for="uploadLogo" class="form-label">Upload new logo</label>
+                    <input class="form-control form-control-sm" form="event-form" id="uploadLogo" type="file" name="eventLogo" onchange="PreviewImage();"  />
+                <script type="text/javascript">
+                    function PreviewImage() {
+                        const oFReader = new FileReader();
+                        oFReader.readAsDataURL(document.getElementById("uploadLogo").files[0]);
+
+                        oFReader.onload = function (oFREvent) {
+                            document.getElementById("uploadPreview").src = oFREvent.target.result;
+                        };
+                    }
+                </script>
             </div>
-        </form>
+            <div class="col-lg-6">
+                <h1>Add event:</h1>
+                <form method="post" id="event-form" th:action="@{editor/addEvent}" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <input type="text" name="title" class="form-control" placeholder="Event title">
+                    </div>
+                    <div class="form-group lead">
+                        <textarea name="description" class="form-control" rows="3" placeholder="Description"></textarea>
+                    </div>
+                    <small class="text-muted" th:text="'Registration ends at ...'"></small>
+                    <div>
+                        <label for="regEndTime">End time</label>
+                        <input type="datetime-local" name="endDate" id="regEndTime">
+                    </div>
+                </form>
+            </div>
+            <div class="text-center mt-2">
+                <button class="btn btn-primary mt-2" form="event-form" type="submit" th:text="'Create new event'"></button>
+            </div>
+        </div>
     </div>
-    <div class="col-md-1 themed-grid-col"></div>
     <div class="col-md-3 themed-grid-col">
         <div th:replace="fragments/nav :: eventSidebar(currentUrl= @{${#httpServletRequest.requestURI}})"></div>
     </div>

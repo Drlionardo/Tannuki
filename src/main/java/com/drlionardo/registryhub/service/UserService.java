@@ -1,9 +1,6 @@
 package com.drlionardo.registryhub.service;
 
-import com.drlionardo.registryhub.domain.Event;
-import com.drlionardo.registryhub.domain.RegistrationRequest;
-import com.drlionardo.registryhub.domain.Role;
-import com.drlionardo.registryhub.domain.User;
+import com.drlionardo.registryhub.domain.*;
 import com.drlionardo.registryhub.exceptions.EmailAlreadyExistsException;
 import com.drlionardo.registryhub.exceptions.UsernameAlreadyExistsException;
 import com.drlionardo.registryhub.exceptions.WrongPasswordException;
@@ -15,8 +12,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,11 +26,13 @@ public class UserService implements UserDetailsService {
     private MailSender mailSender;
     @Value("${app.url}")
     private String appUrl;
+    private ImageStorageService imageService;
 
-    public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder, MailSender mailSender) {
+    public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder, MailSender mailSender, ImageStorageService imageService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.mailSender = mailSender;
+        this.imageService = imageService;
     }
 
     public void registerUser(User user) {
@@ -130,5 +131,22 @@ public class UserService implements UserDetailsService {
 
     public boolean checkPassword(String currentPassword, Long userId) {
         return passwordEncoder.matches(currentPassword, findUserById(userId).getPassword());
+    }
+
+    public void setAvatar(Long userId, MultipartFile image) throws IOException {
+        User user = findUserById(userId);
+        Image avatar = imageService.saveFile(image);
+        user.setAvatar(avatar);
+        userRepo.save(user);
+    }
+
+    public void deleteAvatar(Long userId) {
+        User user = findUserById(userId);
+        if(user.getAvatar() != null) {
+            UUID avatarId = user.getAvatar().getId();
+            user.setAvatar(null);
+            userRepo.save(user);
+            imageService.deleteFile(avatarId);
+        }
     }
 }
