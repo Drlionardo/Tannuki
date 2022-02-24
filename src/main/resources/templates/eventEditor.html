@@ -4,57 +4,117 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>Registry Hub</title>
     <link rel="stylesheet" href="/static/style.css">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
 <body>
 <div th:replace="fragments/nav :: navbar"></div>
 <div class="row mt-5">
     <div class="col-md-2 themed-grid-col"></div>
-    <div class="col-md-5 themed-grid-col">
+    <div class="col-md-6 themed-grid-col">
         <div class="alert alert-success" role="alert" th:text="${successMessage}" th:if="${successMessage}"></div>
         <div class="alert alert-danger" role="alert" th:text="${errorMessage}" th:if="${errorMessage}"></div>
-        <div><h2>Event editor</h2></div>
-        <form method="post" th:action="@{/editor/event/edit (id = ${selectedEvent.id})}">
-            <div class="form-group row">
-                <label for="eventTitle" class="col-sm-2 col-form-label">Title</label>
-                <div class="col-sm-7">
-                    <input type="text" name="eventTitle" class="form-control" id="eventTitle" th:value="${selectedEvent.title}">
-                </div>
+
+        <div class="row flex-lg-row-reverse align-items-center py-5 bg-white">
+            <div class="col-10 col-sm-8 col-lg-6">
+                <img id="uploadPreview"
+                     th:src="'https://tannuki-space.fra1.digitaloceanspaces.com/images/default/event-logo.svg'"
+                     class="img-thumbnail rounded img-fluid" loading="lazy" alt="User avatar">
+                <label for="uploadLogo" class="form-label">Upload new logo</label>
+                <input class="form-control form-control-sm" form="event-form" id="uploadLogo" type="file"
+                       name="eventLogo" onchange="PreviewImage();"/>
+                <script type="text/javascript">
+                    function PreviewImage() {
+                        const oFReader = new FileReader();
+                        oFReader.readAsDataURL(document.getElementById("uploadLogo").files[0]);
+
+                        oFReader.onload = function (oFREvent) {
+                            document.getElementById("uploadPreview").src = oFREvent.target.result;
+                        };
+                    }
+                </script>
             </div>
-            <div class="form-group">
-                <label for="eventDescription" class="col-sm-2 col-form-label">Description</label>
-                <div class="col-sm-9">
-                    <textarea name="eventDescription" class="form-control" th:text="${selectedEvent.description}" id=eventDescription rows="3"></textarea>
-                </div>
-            </div>
-            <button class="btn btn-primary mt-2" type="submit" th:text="'Save'"></button>
-        </form>
-        <hr>
-        Admins list:
-        <ul>
-            <li th:each="admin : ${selectedEvent.admins}">
-                <form method="post" th:action="@{/editor/event/deleteAdmin (id = ${selectedEvent.id})}">
-                    <label for="'admin' + ${admin.id}" th:text="${admin.username} +' (' + ${admin.email} +')'"></label>
-                    <button type="submit" class="btn btn-danger" id="'admin' + ${admin.id}">Delete</button>
-                    <input type="hidden" name="adminId" th:value="${admin.id}">
+            <div class="col-lg-6">
+                <h1>Update event:</h1>
+                <form method="post" id="event-form" th:action="@{editor/addEvent}" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="title" th:value="${selectedEvent.title}"
+                               placeholder="Event title">
+                    </div>
+                    <div class="form-group lead">
+                        <textarea name="description" class="form-control" rows="3"
+                                  th:text="${selectedEvent.description}" placeholder="Description"></textarea>
+                    </div>
+                    <small class="text-muted" th:text="'Registration ends at ...'"></small>
+                    <div>
+                        <label for="regEndTime">End time</label>
+                        <input type="datetime-local" name="endDate" id="regEndTime"
+                               th:value="${selectedEvent.registrationEndDate}">
+                    </div>
                 </form>
-            </li>
-        </ul>
-        <form method="post" th:action="@{/editor/event/addAdmin (id = ${selectedEvent.id})}">
-            <div class="form-group row">
-                <label for="adminEmail" class="col-sm-2 col-form-label">Email</label>
-                <div class="col-sm-6">
-                    <input type="email" id="adminEmail" name="adminEmail" class="form-control" placeholder="adminEmail@example.com">
-                </div>
             </div>
-            <button class="btn btn-primary mt-2" type="submit">Add admin</button>
-        </form>
-        <hr>
+            <div class="text-center mt-2">
+                <button class="btn btn-primary mt-2" form="event-form" type="submit" th:text="'Update event'"></button>
+            </div>
+        </div>
+        <div class="bd-tabs bg-white"
+             th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}">
+            <ul class="nav nav-tabs" th:with="filter=${#request.getParameter('filter')}">
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:href="@{${urlBuilder.replaceQueryParam('filter', 'stats').build().toUriString()}}"
+                       th:classappend="${filter == 'stats' or filter == null}? 'active':''">Stats</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       th:href="@{${urlBuilder.replaceQueryParam('filter', 'posts').build().toUriString()}}"
+                       th:classappend="${filter == 'posts'}? 'posts':''">Add post</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button"
+                       aria-expanded="false" th:classappend="${filter == 'users' || filter == 'admins'}? 'active':''">Users</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="nav-link"
+                               th:href="@{${urlBuilder.replaceQueryParam('filter', 'users').build().toUriString()}}"
+                        >Registered users</a></li>
+                        <li><a class="nav-link"
+                               th:href="@{${urlBuilder.replaceQueryParam('filter', 'admins').build().toUriString()}}"
+                        >Admins</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div id="adminList" class="row flex-lg-row align-items-center py-5 px-3 bg-white">
+            Admins list:
+            <ul>
+                <li th:each="admin : ${selectedEvent.admins}">
+                    <form method="post" th:action="@{/editor/event/deleteAdmin (id = ${selectedEvent.id})}">
+                        <label for="'admin' + ${admin.id}"
+                               th:text="${admin.username} +' (' + ${admin.email} +')'"></label>
+                        <button type="submit" class="btn btn-danger" id="'admin' + ${admin.id}">Delete</button>
+                        <input type="hidden" name="adminId" th:value="${admin.id}">
+                    </form>
+                </li>
+            </ul>
+            <form method="post" th:action="@{/editor/event/addAdmin (id = ${selectedEvent.id})}">
+                <div class="form-group row">
+                    <label for="adminEmail" class="col-sm-2 col-form-label">Email</label>
+                    <div class="col-sm-6">
+                        <input type="email" id="adminEmail" name="adminEmail" class="form-control"
+                               placeholder="adminEmail@example.com">
+                    </div>
+                </div>
+                <button class="btn btn-primary mt-2" type="submit">Add admin</button>
+            </form>
+        </div>
+
         <p class="mt-2">
-            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" th:data-bs-target="'#addPost'">Add post</button>
+            <button class="btn btn-primary" type="button" data-bs-toggle="collapse" th:data-bs-target="'#addPost'">Add
+                post
+            </button>
         </p>
         <div class="collapse container mt-5" th:id="'addPost'">
             <h3>Add Post:</h3>
@@ -75,28 +135,35 @@
                 <button type="submit" class="btn btn-primary">Add post</button>
             </form>
         </div>
-        <div class="container mt-2" style="max-width: 1080px">
+        <div class="row mt-2">
             <h3>Event posts</h3>
             <div class="card mb-3 flex-fill" th:each="post : ${selectedEvent.posts}">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${post.title}"></h5>
                     <p class="card-text" th:text="${post.text}"></p>
-                    <p class="card-text"><small class="text-muted" th:text="'Published ' + ${post.getLastUpdateDuration()}"></small></p>
+                    <p class="card-text"><small class="text-muted"
+                                                th:text="'Published ' + ${post.getLastUpdateDuration()}"></small></p>
                 </div>
                 <p>
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" th:data-bs-target="'#comments_' + ${post.id}" th:text="${post.commentsCounter} + ' comments'">Open/Close</button>
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            th:data-bs-target="'#comments_' + ${post.id}"
+                            th:text="${post.commentsCounter} + ' comments'">Open/Close
+                    </button>
                 </p>
                 <div class="collapse" th:id="'comments_' + ${post.id}">
                     <div class="card">
                         <div class="row g-0" th:each="comment : ${post.comments}">
                             <div class="col-md-1">
-                                <img th:src="${comment.author.avatar}?${comment.author.avatar.url} :'https://tannuki-space.fra1.digitaloceanspaces.com/images/default/user-avatar.svg'" class="img-fluid rounded-start" alt="user avatar">
+                                <img th:src="${comment.author.avatar}?${comment.author.avatar.url} :'https://tannuki-space.fra1.digitaloceanspaces.com/images/default/user-avatar.svg'"
+                                     class="img-fluid rounded-start" alt="user avatar">
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
                                     <h5 class="card-title" th:text="${comment.author.username}"></h5>
                                     <p class="card-text" th:text="${comment.text}"></p>
-                                    <p class="card-text"><small class="text-muted" th:text="${comment.getLastUpdateDuration()}"></small></p>
+                                    <p class="card-text"><small class="text-muted"
+                                                                th:text="${comment.getLastUpdateDuration()}"></small>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -105,11 +172,12 @@
             </div>
         </div>
     </div>
-    <div class="col-md-1 themed-grid-col"></div>
     <div class="col-md-3 themed-grid-col">
         <div th:replace="fragments/nav :: eventSidebar(currentUrl= @{${#httpServletRequest.requestURI} (id = ${selectedEvent.id})})"></div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 </body>
 </html>
